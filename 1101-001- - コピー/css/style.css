@@ -1,0 +1,109 @@
+body {
+  background-color: #a0a0a0
+}
+A:link { 
+  color: #8080ff;
+}
+A:visited 
+{
+  color: #ff8080;
+}
+#root {
+  margin-left:auto;
+  margin-right:auto;
+  width:960px;
+  height: 670px;
+  background-color: #202020;
+  text-align:left;
+}
+#playarea {
+  position:absolute;
+  top: 20px;
+}
+#playscreen {
+  position:absolute;
+  top: 80px;
+  left: 15px;
+  width: 640px;
+  height: 480px;
+  border-top-width: 6px;
+  border-right-width: 6px;
+  border-bottom-width: 6px;
+  border-left-width: 6px;
+  border-top-style: groove;
+  border-right-style: groove;
+  border-bottom-style: groove;
+  border-left-style: groove;
+  z-index: 1;
+}
+#gameInterface {
+  margin-top: 50px;
+}
+
+#hearts-container {
+  display: flex;
+  gap: 10px; /*расстояние между сердцами*/
+}
+.heart {
+  
+  width: 40px;
+  height: 40px;
+  background-image: url('image/hpHeart.png'); /*картинка сердца*/
+  background-size: cover;
+  background-repeat: no-repeat;
+  filter: grayscale(0); /*полное сердце*/
+}
+.heart.empty {
+  filter: grayscale(100%); /*серое сердце имитация пустого*/
+}
+#helpimg {
+  position:absolute;
+  top: 80px;
+  left:680px;
+}
+#helptext {
+  position:absolute;
+  top: 150px;
+  left:680px;
+  width: 250px;
+  height: 400px;
+  background-color: #e0e0ff;
+  padding-top: 8px;
+  padding-left: 8px;
+  border-top-width: 6px;
+  border-right-width: 6px;
+  border-bottom-width: 6px;
+  border-left-width: 6px;
+  border-top-style: double;
+  border-right-style: double;
+  border-bottom-style: double;
+  border-left-style: double;
+  font-size:14px;
+}
+#linkarea {
+  position:absolute;
+  top: 590px;
+  left: 20px;
+  width:500px;
+  font-size:14px;
+}
+#copyrightarea {
+  position:absolute;
+  top: 630px;
+  width:960px;
+  text-align:center;
+  font-size:16px;
+  color:#ffffff;
+}
+#accesscounter {
+  position:absolute;
+  top: 20px;
+  left: 850px;
+  z-index: 1;
+}
+#focusarea {
+  position:absolute;
+  top: -100px;
+  left: -100px;
+  z-index: 0;
+}
