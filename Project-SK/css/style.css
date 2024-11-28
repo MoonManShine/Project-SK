@@ -36,26 +36,6 @@ A:visited
   border-left-style: groove;
   z-index: 1;
 }
-#gameInterface {
-  margin-top: 50px;
-}
-
-#hearts-container {
-  display: flex;
-  gap: 10px; /*расстояние между сердцами*/
-}
-.heart {
-  
-  width: 40px;
-  height: 40px;
-  background-image: url('image/hpHeart.png'); /*картинка сердца*/
-  background-size: cover;
-  background-repeat: no-repeat;
-  filter: grayscale(0); /*полное сердце*/
-}
-.heart.empty {
-  filter: grayscale(100%); /*серое сердце имитация пустого*/
-}
 #helpimg {
   position:absolute;
   top: 80px;

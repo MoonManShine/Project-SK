@@ -1,4 +1,11 @@
 var gFirstFlg = 1;
+var BULLET_NUM = 8;
+var gBulletObj = []; 
+var gBulletX = 0;
+var gBulletY = 0;
+var Bullet_limit = 100;
+var SODN = 0; //���Đ�
+var Bullet_hit;
 var gPosX;
 var gImage;
 var gImageT;
@@ -7,13 +14,13 @@ var gImageS2;
 var gImageGt;
 var gImagePs;
 var gImageET;
-var BULLET_NUM = 8;    
-var gBulletObj = []; 
+var gImageBb;
 var gScene;
 var time;
+var Pspeed;
 var i;
-var Bullet_limit    =   100;
-var Pdirection
+var Pdirection;
+
 var gImageObj;
 var gBackX0;
 var gBackY0;
@@ -63,7 +70,7 @@ function update() {
     var font;
     var speed;
     var j, idx;
-
+    
 
 
     if (gFirstFlg == 1) {
@@ -74,8 +81,11 @@ function update() {
         gImage = new image("./images/PlayerG.png"); //���@
         gImagePs = new image("./images/Pshot.png"); //�e���@
         gImageET = new image("./images/Tentacle.png"); //�e���^
+        gImageBb = new image("./images/Bombeffect.png");
         hpHeartImg = new image("./images/hpHeart.png");
         hpEmpty = new image("./images/hpEmpty.png");
+        gPspeed = 10;    //���@���x
+        SODN = 0;//���Đ�
         gBackX = 0;
         gBackY0 = 0;
         gBackY1 = 768;
@@ -86,10 +96,10 @@ function update() {
         }
         gDispCnt = 0;
         gScene = 0; //��ʑJ��     
+        gFirstFlg = 0;      //�������p
         time = 0;   // �X�g�[���[��ʑJ��
         gPosX = 633;    //���@���W
         Pdirection = 100;   //���@��������
-        gFirstFlg = 0;      //�������p
     }
 
 
@@ -114,7 +124,8 @@ function update() {
             gImageS2.draw(0, 0, 0, 0, 1366, 768);
             time++;
         } else if (time >= 240) {
-            gScene = 2;
+        gScene = 2;
+        time = 0;
         }
         drawString(300, 50, "red", "24px 'HG�n�p�p�S�V�b�NUB'", "Time" + time)
         drawString(300, 100, "red", "24px 'HG�n�p�p�S�V�b�NUB'", "gScens" + gScene)
@@ -125,6 +136,7 @@ function update() {
         //�Q�[����ʔ�
         drawFill(0, 0, 1366, 768, BG_COLOR[gStage]);
         gImageGt.draw(343, 0, 0, 0, 680, 768);
+        
         ///////////////////////////////////////////////////�w�i
         ///////////////////////////////////////////////////////
         if (gMapPosY > gMapEnd) {
@@ -138,6 +150,12 @@ function update() {
             gStage++;
             if (gStage > 3) {
                 gStage = 0;
+                OBJ_Y_DATA = [
+                    [-800, -900, -1200, -1800, -2100, -2200, -2300],
+                    [-800, -1200, -1900, -8000, -2100, -2200, -2300],
+                    [-800, -900, -1200, -1800, -2100, -2200, -2300],
+                    [-800, -900, -1200, -1800, -2100, -2200, -2300]
+                ];
             }
         }       
         if (gBackY0 < 0) {
@@ -152,93 +170,101 @@ function update() {
         if ((gImgH - gBackY1) > 0) {
             gImageGt.draw( 343, gBackY1, 0, 0, gImgW, (gImgH + gBackY1));
         }
-        drawString(0, 150, "red", "24px 'HG�n�p�p�S�V�b�NUB'", "Pdirection" + Pdirection)
+        drawString(0, 150, "red", "24px 'HG�n�p�p�S�V�b�NUB'", "Number of shots down" + SODN)
         drawString(0, 200, "red", "24px  'HG�n�p�p�޼��UB'", "STAGE:" + gStage + "MAP POS:" + gMapPosY + "_" + (gMapPosY - 768));
         drawString(0, 250, "red", "24px  'HG�n�p�p�޼��UB'", "gBackY0" + gBackY0);
         drawString(0, 300, "red", "24px  'HG�n�p�p�޼��UB'", "gBackY1" + gBackY1);
-        //�e
+        ////////////////////////////////////////////
+        ///////////////////////////////////////////�e
+        time++; //�e���ˊԊu�̐���
         //�L�[���͏���
         if (isC()) {
-            for (i = 0; i < BULLET_NUM; i++) {
-                if (Bullet_limit >= 0){//�c�e��
-                    Bullet_limit++;
-                    if (gBulletObj[i].getActive() == 0) {
-                        var clickPos = getClickPos();
-                        gBulletObj[i].shot((gPosX + 47), 658, 0, 8); 
-                        break;              //�e��X   //�e��Y
+            if (time >= 30) {
+                time = 0;
+                for (i = 0; i < BULLET_NUM; i++) {
+                    if (Bullet_limit >= 0) {//�c�e��
+                        Bullet_limit++;
+                        if (gBulletObj[i].getActive() == 0) {
+                            var clickPos = getClickPos();
+                            gBulletObj[i].shot((gPosX + 47), 658, 0, 8);
+                            break;              //�e��X   //�e��Y
+                        }
                     }
                 }
             }
         }
+          
+
         //�X�V����
         for (i = 0; i < BULLET_NUM; i++) {
             gBulletObj[i].update();
         }
 
-        //ki-
+        /////////////////////////////////////////////////
+        /////////////////////////////////////////////////���@�ړ�
         if (isLeft() && gPosX >= 343) {         //hidari
-            gPosX -= 10;
+            gPosX -= gPspeed;
             Pdirection = 0;
         } else if (isRight() && gPosX <= 923) {        //migi
-            gPosX += 10;
+            gPosX += gPspeed;
             Pdirection = 200;
         } else {
             Pdirection = 100;
         }
-        //���@hyouji
-        gImage.draw(gPosX, 658, Pdirection, 0, 100, 100);
+        gImage.draw(gPosX, 658, Pdirection, 0, 100, 100); //���@hyouji
+        ///////////////////////////////////////////
+        ///////////////////////////////////////////�G�e���^�\��
         for (idx = 0; idx < OBJ_NUM; idx++) {
             if (OBJ_Y_DATA[gStage][idx] > gMapPosY && OBJ_Y_DATA[gStage][idx] < (gMapPosY + 768)) {
-                var dir = getRand(10);
-                var dis = getRand(10);
+                var dir = getRand(10);//�G�v���v��
+                var dis = getRand(10); //�G�v���v��
                 if (dir % 2 == 0) {
                     dir = -1;
                 } else {
                     dir = 1;
                 }
-                gImageET.draw((OBJ_X_DATA + dir * dis), (OBJ_Y_DATA[gStage][idx] - gMapPosY), OBJ_SRCX_DATA[gStage][idx], 0, 80, 80);
-                if (checkCollision(PlayerG,gImageET[i])) {
-                    gImageET.splice(i, 1); /*удаление врага*/
-                    playerHP--;
-                    if (playerHP <= 0) {
-                        alert("Game Over");
-                        return;
+                if ((gBulletX - (OBJ_X_DATA + dir * dis)) <= 80 && (gBulletX - (OBJ_X_DATA + dir * dis)) >= 0 && (gBulletY - (OBJ_Y_DATA[gStage][idx] - gMapPosY)) <= 80 && (gBulletY - (OBJ_Y_DATA[gStage][idx] - gMapPosY)) >= 0) {
+                    gImageBb.draw((OBJ_X_DATA + dir * dis), (OBJ_Y_DATA[gStage][idx] - gMapPosY), OBJ_SRCX_DATA[gStage][idx], 0, 80, 80);  //�G�ƒe���d�Ȃ�Ɣ����\��
+                    Bullet_hit = true//�e����
+                    if ((gBulletY - (OBJ_Y_DATA[gStage][idx] - gMapPosY)) <= 10) {
+                        OBJ_Y_DATA[gStage][idx] = -9999; //���������������
+                        SODN++;//���Đ�+�P
                     }
+                }else{
+                gImageET.draw((OBJ_X_DATA + dir * dis), (OBJ_Y_DATA[gStage][idx] - gMapPosY), OBJ_SRCX_DATA[gStage][idx], 0, 80, 80); //����ȊO�͓G��\��
+                    Bullet_hit = false;
                 }
             }
         }
+
         
         
     drawHP();    
     }
+    
     //�G
 
+            
                     
 
           
            
 
 }
-
 function drawHP() {
     for (var i = 0; i < maxHp; i++) {
          var heartX = hpStartX + i * (hpHeartImgWidth + hpSpacing);
 
          if (i < playerHP) {
+            // Отрисовка заполненного сердца
             hpHeartImg.draw(heartX, hpStartY, 0, 0, hpHeartImgWidth, hpHeartImgHeight);
-         } else {
+        } else {
+            // Если нужно отображать "пустые" сердца, можно добавить другое изображение
             hpEmpty.draw(heartX, hpStartY, hpHeartImgWidth, hpHeartImgHeight, "gray");
-         }
+        }
     }
 }
-function checkCollision() {
-    return (
-        obj1.x < obj2.x + obj2.width &&
-        obj1.x + obj1.width > obj2.x &&
-        obj1.y < obj2.y + obj2.height &&
-        obj1.y + obj1.height > obj2.y
-    )
-}
+
 
     //byouga    gazo   kyanpasu    gazousaizu
     //gImage.draw(0, 0, 0, 0, 1366, 768);
@@ -258,18 +284,23 @@ function bullet() {
     /////////////////////////////////////
     // �X�V�֐�
     this.update = function() {
-    drawString(300, 50, "red", "24px 'HG�n�p�p�S�V�b�NUB'", "mPoint.x" + mPoint.x)
-    drawString(300, 100, "red", "24px 'HG�n�p�p�S�V�b�NUB'", "mPoint.y" + mPoint.y)
+        drawString(300, 50, "red", "24px 'HG�n�p�p�S�V�b�NUB'", "mPoint.x" + mPoint.x)
+        drawString(300, 100, "red", "24px 'HG�n�p�p�S�V�b�NUB'", "mPoint.y" + mPoint.y)
+        drawString(300, 150, "red", "24px 'HG�n�p�p�S�V�b�NUB'", "Bullet_hit" + Bullet_hit)
         if (mActiveFlg) {
-            gImagePs.draw (mPoint.x, mPoint.y, 0, 0,10,40); //�e�ʒu         
+            gImagePs.draw(mPoint.x, mPoint.y, 0, 0, 10, 40); //�e�ʒu         
             mPoint.x -= mMoveY;
             mPoint.y -= mMoveX;
+            gBulletX = mPoint.x;
+            gBulletY = mPoint.y;
             // ��ʊO����
-            if ((mPoint.x + 50 > 1366 || mPoint.x < 0) ||(mPoint.y + 50 >768  || mPoint.y < 0)) {
+            if ((mPoint.x + 50 > 1366 || mPoint.x < 0) || (mPoint.y + 50 > 768 || mPoint.y < 0)) {
                 mActiveFlg = 0;
             }
+
         }
     }
+    
     this.setActive = function(flg) {
         mActiveFlg = flg;
     }
@@ -289,4 +320,5 @@ function bullet() {
         mMoveY = Math.sin(mRadians) * mSpeed;
         mActiveFlg = 1;
     }
+
 }
