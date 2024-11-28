@@ -26,6 +26,7 @@ var gSpeedN = 4;
 var gMapPosY;
 var gStage;
 var hpHeartImg;
+var hpEmpty;
 var hpHeartImgWidth = 100;
 var hpHeartImgHeight = 100;
 var playerHP = 3;
@@ -74,6 +75,7 @@ function update() {
         gImagePs = new image("./images/Pshot.png"); //�e���@
         gImageET = new image("./images/Tentacle.png"); //�e���^
         hpHeartImg = new image("./images/hpHeart.png");
+        hpEmpty = new image("./images/hpEmpty.png");
         gBackX = 0;
         gBackY0 = 0;
         gBackY1 = 768;
@@ -195,6 +197,14 @@ function update() {
                     dir = 1;
                 }
                 gImageET.draw((OBJ_X_DATA + dir * dis), (OBJ_Y_DATA[gStage][idx] - gMapPosY), OBJ_SRCX_DATA[gStage][idx], 0, 80, 80);
+                if (checkCollision(PlayerG,gImageET[i])) {
+                    gImageET.splice(i, 1); /*удаление врага*/
+                    playerHP--;
+                    if (playerHP <= 0) {
+                        alert("Game Over");
+                        return;
+                    }
+                }
             }
         }
         
@@ -217,9 +227,17 @@ function drawHP() {
          if (i < playerHP) {
             hpHeartImg.draw(heartX, hpStartY, 0, 0, hpHeartImgWidth, hpHeartImgHeight);
          } else {
-            drawFill(heartX, hpStartY, hpHeartImgWidth, hpHeartImgHeight, "gray");
+            hpEmpty.draw(heartX, hpStartY, hpHeartImgWidth, hpHeartImgHeight, "gray");
          }
     }
+}
+function checkCollision() {
+    return (
+        obj1.x < obj2.x + obj2.width &&
+        obj1.x + obj1.width > obj2.x &&
+        obj1.y < obj2.y + obj2.height &&
+        obj1.y + obj1.height > obj2.y
+    )
 }
 
     //byouga    gazo   kyanpasu    gazousaizu
