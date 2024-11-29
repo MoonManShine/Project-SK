@@ -239,8 +239,10 @@ function update() {
 
         
         
-    drawHP();    
-    }
+    drawHP();
+    if (checkCollision (palyer, enemies[i])) {
+        playerHP--;          /*damage*/
+            }
     
     //�G
 
