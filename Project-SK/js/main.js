@@ -32,15 +32,15 @@ var gMapEnd = -3072;
 var gSpeedN = 4;
 var gMapPosY;
 var gStage;
-var hpHeartImg;
-var hpEmpty;
-var hpHeartImgWidth = 100;
+var hpHeartImg;             /*filled heart*/
+var hpEmpty;                /*Empty Heart*/
+var hpHeartImgWidth = 100;  
 var hpHeartImgHeight = 100;
-var playerHP = 3;
-var maxHp = 5;
-var hpStartX = 1050;
-var hpStartY = 658;
-var hpSpacing = 5;
+var playerHP = 3;           /*current player HP*/
+var maxHp = 5;              /*Maximum HP*/
+var hpStartX = 1050;        /* HP Bar position X axis*/
+var hpStartY = 658;         /* HP Bar position Y axis*/
+var hpSpacing = 5;          /*Space between hearts*/
 
 var OBJ_NUM = 7;
 
@@ -263,6 +263,14 @@ function drawHP() {
             hpEmpty.draw(heartX, hpStartY, hpHeartImgWidth, hpHeartImgHeight, "gray");
         }
     }
+}
+function checkCollision(obj1, obj2) {       /*obj1 - player, obj2 - enemy*/
+    return (
+        obj1.x < obj2.x + obj2.width && /*левая сторона obj1 левее правой стороной obj2*/
+        obj1.x + obj1.width > obj2.x && /*правая сторона obj1 правее левой стороны obj2*/
+        obj1.y < obj2.y + obj2.height && /*верхняя сторона obj1 выше нижней стороны obj2*/
+        obj1.y + obj1.height > obj2.y     /*Нижняя сторона obj1 ниже верхней стороны obj2*/
+    )
 }
 
 
