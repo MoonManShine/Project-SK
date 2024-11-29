@@ -240,9 +240,25 @@ function update() {
         
         
     drawHP();
-    if (checkCollision (palyer, enemies[i])) {
-        playerHP--;          /*damage*/
+    for (var i = 0; i < OBJ_Y_DATA; i++) {
+        if  (
+            checkCollision (
+                {x: gPosX, y: 658, width: 100, height: 100}, /*player*/
+                OBJ_Y_DATA[i]
+            )
+        ) {  
+            console.log("Collision detected with enemy " + i);
+            enemies.splice(i, 1); // Удаление врага
+            i--; // Скорректировать индекс после удаления
+            playerHP--; // Уменьшение здоровья
+        if (playerHP <= 0) {
+            alert("Game Over!");
+            return; // Остановка игры
             }
+        }
+    }
+}
+
     
     //�G
 
