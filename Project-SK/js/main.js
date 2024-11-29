@@ -39,7 +39,7 @@ var hpHeartImgHeight = 100;
 var playerHP = 3;
 var maxHp = 5;
 var hpStartX = 1050;
-var hpStartY = 670;
+var hpStartY = 658;
 var hpSpacing = 5;
 
 var OBJ_NUM = 7;
