@@ -1,7 +1,7 @@
 var gFirstFlg = 1;
 var BULLET_NUM = 8;
 var EBULLET_NUM = 100;
-var gBulletObj = [];
+var gBulletObj = []; 
 var gEBulletObj = [];
 var gBulletX = 0;
 var gBulletY = 0;
@@ -35,6 +35,15 @@ var gSpeedN = 2;
 var gMapPosY;
 var gcanceloutY; //マップポス打ち消し用
 var gStage;
+var hpHeartImg;
+var hpEmpty;
+var hpHeartImgWidth = 100;
+var hpHeartImgHeight = 100;
+var playerHP = 3;
+var maxHp = 5;
+var hpStartX = 1050;
+var hpStartY = 658;
+var hpSpacing = 5;
 
 var OBJ_NUM = 7;
 
@@ -55,7 +64,7 @@ var OBJ_SRCX_DATA = [
     [0, 0, 0, 0, 0, 0, 0]
 ];
 
-var BG_COLOR = ["WHITE", "BLUE", "BLACK", "GREEN"];
+var BG_COLOR = ["WHITE", "BLUE", "BLACK", "GREEN"];         
 
 function update() {
 
@@ -77,6 +86,8 @@ function update() {
         gImagePs = new image("./images/Pshot.png"); //弾自機
         gImageET = new image("./images/Tentacle.png"); //テンタ
         gImageBb = new image("./images/Bombeffect.png");
+        hpHeartImg = new image("./images/hpHeart.png");
+        hpEmpty = new image("./images/hpEmpty.png");
         gPspeed = 10;    //自機速度
         SODN = 0; //撃墜数
         gBackX = 0;
@@ -86,16 +97,16 @@ function update() {
         gcanceloutY = 0;
         Pdirection = 100;
         gStage = 0;
-        //自機用
+                //自機用
         for (i = 0; i < BULLET_NUM; i++) {
             gBulletObj[i] = new bullet();
         }
-        //敵用
-        for (k = 0; k < EBULLET_NUM; k++) {
-            gEBulletObj[k] = new Ebullet();
-        }
+                //敵用
+                for (k = 0; k < EBULLET_NUM; k++) {
+                    gEBulletObj[k] = new Ebullet();
+                }
         gDispCnt = 0;
-        gScene = 0; //画面遷移     
+        gScene = 0; //画面遷移    
         gFirstFlg = 0;      //初期化用
         time = 0;   // ストーリー画面遷移
         gPosX = 633;    //自機座標
@@ -124,8 +135,8 @@ function update() {
             gImageS2.draw(0, 0, 0, 0, 1366, 768);
             time++;
         } else if (time >= 240) {
-            gScene = 2;
-            time = 0;
+        gScene = 2;
+        time = 0;
         }
         drawString(300, 50, "red", "24px 'HG創英角ゴシックUB'", "Time" + time)
         drawString(300, 100, "red", "24px 'HG創英角ゴシックUB'", "gScens" + gScene)
@@ -136,7 +147,7 @@ function update() {
         //ゲーム画面白
         drawFill(0, 0, 1366, 768, BG_COLOR[gStage]);
         gImageGt.draw(343, 0, 0, 0, 680, 768);
-
+        
         ///////////////////////////////////////////////////背景
         ///////////////////////////////////////////////////////
         if (gMapPosY > gMapEnd) {
@@ -158,7 +169,7 @@ function update() {
                     [-800, -900, -1200, -1800, -2100, -2200, -2300]
                 ];
             }
-        }
+        }       
         if (gBackY0 < 0) {
             gBackY0 = 768;
         }
@@ -196,7 +207,7 @@ function update() {
                 }
             }
         }
-
+          
 
         //更新処理
         for (i = 0; i < BULLET_NUM; i++) {
@@ -227,7 +238,6 @@ function update() {
                 } else {
                     dir = 1;
                 }
-
                 if ((gBulletX - (OBJ_X_DATA + dir * dis)) <= 80 && (gBulletX - (OBJ_X_DATA + dir * dis)) >= 0 && (gBulletY - (OBJ_Y_DATA[gStage][idx] - gMapPosY)) <= 80 && (gBulletY - (OBJ_Y_DATA[gStage][idx] - gMapPosY)) >= 0) {
                     gImageBb.draw((OBJ_X_DATA + dir * dis), (OBJ_Y_DATA[gStage][idx] - gMapPosY), OBJ_SRCX_DATA[gStage][idx], 0, 80, 80);  //敵と弾が重なると爆発表示
                     Bullet_hit = 1; //弾消す
@@ -283,47 +293,68 @@ function update() {
 
     }
     //敵
+    drawHP();    
+    }
+    
+    //�G
+
+            
+                    
+
+          
+           
 
 
+function drawHP() {
+    for (var i = 0; i < maxHp; i++) {
+         var heartX = hpStartX + i * (hpHeartImgWidth + hpSpacing);
 
-
-
-
+         if (i < playerHP) {
+            // Отрисовка заполненного сердца
+            hpHeartImg.draw(heartX, hpStartY, 0, 0, hpHeartImgWidth, hpHeartImgHeight);
+        } else {
+            // Если нужно отображать "пустые" сердца, можно добавить другое изображение
+            hpEmpty.draw(heartX, hpStartY, hpHeartImgWidth, hpHeartImgHeight, "gray");
+        }
+    }
 }
 
 
-//byouga    gazo   kyanpasu    gazousaizu
-//gImage.draw(0, 0, 0, 0, 1366, 768);
+    //byouga    gazo   kyanpasu    gazousaizu
+    //gImage.draw(0, 0, 0, 0, 1366, 768);
 
 
 
 /////////////////////////////////////
-// 弾クラス
+// �e�N���X
 /////////////////////////////////////
 function bullet() {
-    // コンストラクタ
+    // �R���X�g���N�^
     var mSpeed = 10;
     var mPoint = { x: 0, y: 0 };
     var mAngle = 0;
     var mRadians, mMoveX, mMoveY;
     var mActiveFlg = 0; // 0:InActive 1:Active
     /////////////////////////////////////
-    // 更新関数
+    // �X�V�֐�
     this.update = function() {
-
+        drawString(300, 50, "red", "24px 'HG�n�p�p�S�V�b�NUB'", "mPoint.x" + mPoint.x)
+        drawString(300, 100, "red", "24px 'HG�n�p�p�S�V�b�NUB'", "mPoint.y" + mPoint.y)
+        drawString(300, 150, "red", "24px 'HG�n�p�p�S�V�b�NUB'", "Bullet_hit" + Bullet_hit)
         if (mActiveFlg) {
-            gImagePs.draw(mPoint.x, mPoint.y, 0, 0, 10, 40); //弾位置         
+            gImagePs.draw(mPoint.x, mPoint.y, 0, 0, 10, 40); //�e�ʒu         
             mPoint.x -= mMoveY;
             mPoint.y -= mMoveX;
             gBulletX = mPoint.x;
             gBulletY = mPoint.y;
-            // 画面外処理
+            // ��ʊO����
             if ((mPoint.x + 50 > 1366 || mPoint.x < 0) || (mPoint.y + 50 > 768 || mPoint.y < 0)) {
                 mActiveFlg = 0;
             }
+
         }
     }
-
+    
     this.setActive = function(flg) {
         mActiveFlg = flg;
     }
@@ -344,53 +375,4 @@ function bullet() {
         mActiveFlg = 1;
     }
 
-}
-
-
-
-/////////////////////////////////////
-// 敵弾クラス
-/////////////////////////////////////
-function Ebullet() {
-    // コンストラクタ
-    var EmSpeed = 10;
-    var EmPoint = { x: 0, y: 0 };
-    var EmAngle = 0;
-    var EmRadians, EmMoveX, EmMoveY;
-    var EmActiveFlg = 0; // 0:InActive 1:Active
-    /////////////////////////////////////
-    // 更新関数
-
-    this.update = function() {
-        drawString(300, 50, "red", "24px 'HG創英角ゴシックUB'", "EmPoint.x" + EmPoint.x)
-        drawString(300, 100, "red", "24px 'HG創英角ゴシックUB'", "EmPoint.y" + EmPoint.y)
-        if (EmActiveFlg) {
-            drawFill(EmPoint.x, EmPoint.y, 10, 10, "red");
-            EmPoint.x -= EmMoveY;
-            EmPoint.y += EmMoveX;
-            // 画面外処理
-            if (EmPoint.y + 50 > 768 || EmPoint.y < -868) {
-                EmActiveFlg = 0;
-            }
-        }
-    }
-    this.setEActive = function(Eflg) {
-        EmActiveFlg = Eflg;
-    }
-    this.getEActive = function() {
-        return EmActiveFlg;
-    }
-    this.getEPos = function() {
-        return [EmPoint.x, EmPoint.y];
-    }
-    this.Eshot = function(x, y, Eangle, Espeed) {
-        EmPoint.x = x;
-        EmPoint.y = y;
-        EmAngle = Eangle;
-        EmSpeed = Espeed;
-        EmRadians = EmAngle * Math.PI / 180;
-        EmMoveX = Math.cos(EmRadians) * EmSpeed;
-        EmMoveY = Math.sin(EmRadians) * EmSpeed;
-        EmActiveFlg = 1;
-    }
 }
