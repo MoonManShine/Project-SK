@@ -41,6 +41,7 @@ var maxHp = 5;              /*Maximum HP*/
 var hpStartX = 1050;        /* HP Bar position X axis*/
 var hpStartY = 658;         /* HP Bar position Y axis*/
 var hpSpacing = 5;          /*Space between hearts*/
+var tUp = 10;
 
 var OBJ_NUM = 7;
 
