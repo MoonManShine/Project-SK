@@ -41,6 +41,7 @@ var maxHp = 5;
 var hpStartX = 1050;
 var hpStartY = 658;
 var hpSpacing = 5;
+var hp=1
 
 var OBJ_NUM = 7;
 
