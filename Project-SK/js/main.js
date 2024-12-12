@@ -1,10 +1,12 @@
 var gFirstFlg = 1;
 var BULLET_NUM = 8;
-var gBulletObj = []; 
+var EBULLET_NUM = 100;
+var gBulletObj = [];
+var gEBulletObj = [];
 var gBulletX = 0;
 var gBulletY = 0;
 var Bullet_limit = 100;
-var SODN = 0; //���Đ�
+var SODN = 0; //撃墜数
 var Bullet_hit;
 var gPosX;
 var gImage;
@@ -29,8 +31,9 @@ var gBackY1;
 var gImgW = 680;
 var gImgH = 768;
 var gMapEnd = -3072;
-var gSpeedN = 4;
+var gSpeedN = 2;
 var gMapPosY;
+var gcanceloutY; //マップポス打ち消し用
 var gStage;
 var hpHeartImg;             /*filled heart*/
 var hpEmpty;                /*Empty Heart*/
@@ -61,7 +64,7 @@ var OBJ_SRCX_DATA = [
     [0, 0, 0, 0, 0, 0, 0]
 ];
 
-var BG_COLOR = ["WHITE", "BLUE", "BLACK", "GREEN"];         
+var BG_COLOR = ["WHITE", "BLUE", "BLACK", "GREEN"];
 
 function update() {
 
@@ -70,36 +73,44 @@ function update() {
     var font;
     var speed;
     var j, idx;
-    
+    var k;
+    var L;
 
 
     if (gFirstFlg == 1) {
-        gImageT = new image("./images/TitleScreen.png");//�^�C�g��
-        gImageS1 = new image("./images/Summary1.png");//�X�g�[���[�P�Q�R
+        gImageT = new image("./images/TitleScreen.png"); //タイトル
+        gImageS1 = new image("./images/Summary1.png"); //ストーリー１２３
         gImageS2 = new image("./images/Summary2.png");
-        gImageGt = new image("./images/gameTemplatepng.png");//�w�i
-        gImage = new image("./images/PlayerG.png"); //���@
-        gImagePs = new image("./images/Pshot.png"); //�e���@
-        gImageET = new image("./images/Tentacle.png"); //�e���^
+        gImageGt = new image("./images/gameTemplatepng.png"); //背景
+        gImage = new image("./images/PlayerG.png"); //自機
+        gImagePs = new image("./images/Pshot.png"); //弾自機
+        gImageET = new image("./images/Tentacle.png"); //テンタ
         gImageBb = new image("./images/Bombeffect.png");
         hpHeartImg = new image("./images/hpHeart.png");
         hpEmpty = new image("./images/hpEmpty.png");
-        gPspeed = 10;    //���@���x
-        SODN = 0;//���Đ�
+        gPspeed = 10;    //自機速度
+        SODN = 0; //撃墜数
         gBackX = 0;
         gBackY0 = 0;
         gBackY1 = 768;
         gMapPosY = 0;
+        gcanceloutY = 0;
+        Pdirection = 100;
         gStage = 0;
+        //自機用
         for (i = 0; i < BULLET_NUM; i++) {
             gBulletObj[i] = new bullet();
         }
+        //敵用
+        for (k = 0; k < EBULLET_NUM; k++) {
+            gEBulletObj[k] = new Ebullet();
+        }
         gDispCnt = 0;
-        gScene = 0; //��ʑJ��     
-        gFirstFlg = 0;      //�������p
-        time = 0;   // �X�g�[���[��ʑJ��
-        gPosX = 633;    //���@���W
-        Pdirection = 100;   //���@��������
+        gScene = 0; //画面遷移     
+        gFirstFlg = 0;      //初期化用
+        time = 0;   // ストーリー画面遷移
+        gPosX = 633;    //自機座標
+        Pdirection = 100;   //自機向き制御
     }
 
 
@@ -107,16 +118,16 @@ function update() {
 
 
     if (gScene == 0) {
-        ////////////////////�^�C�g������
+        ////////////////////タイトル部分
         gImageT.draw(0, 0, 0, 0, 1366, 768);
         if (isC()) {
             gScene = 2;
             time = 0;
         }
-        drawString(300, 100, "red", "24px 'HG�n�p�p�S�V�b�NUB'", "gScens" + gScene)
+        drawString(300, 100, "red", "24px 'HG創英角ゴシックUB'", "gScens" + gScene)
 
     } else if (gScene == 1) {
-        //////////////// �X�g�[���[���
+        //////////////// ストーリー画面
         if (time <= 120) {
             gImageS1.draw(0, 0, 0, 0, 1366, 768);
             time++;
@@ -124,20 +135,20 @@ function update() {
             gImageS2.draw(0, 0, 0, 0, 1366, 768);
             time++;
         } else if (time >= 240) {
-        gScene = 2;
-        time = 0;
+            gScene = 2;
+            time = 0;
         }
-        drawString(300, 50, "red", "24px 'HG�n�p�p�S�V�b�NUB'", "Time" + time)
-        drawString(300, 100, "red", "24px 'HG�n�p�p�S�V�b�NUB'", "gScens" + gScene)
+        drawString(300, 50, "red", "24px 'HG創英角ゴシックUB'", "Time" + time)
+        drawString(300, 100, "red", "24px 'HG創英角ゴシックUB'", "gScens" + gScene)
 
     } else if (gScene == 2) {
 
-        ////////////////////�Q�[������///////////////////////////////////
-        //�Q�[����ʔ�
+        ////////////////////ゲーム部分///////////////////////////////////
+        //ゲーム画面白
         drawFill(0, 0, 1366, 768, BG_COLOR[gStage]);
         gImageGt.draw(343, 0, 0, 0, 680, 768);
-        
-        ///////////////////////////////////////////////////�w�i
+
+        ///////////////////////////////////////////////////背景
         ///////////////////////////////////////////////////////
         if (gMapPosY > gMapEnd) {
             gBackY0 -= gSpeedN;
@@ -148,16 +159,17 @@ function update() {
             gBackY1 = 0;
             gMapPosY = 0;
             gStage++;
+            L = -1;
             if (gStage > 3) {
                 gStage = 0;
                 OBJ_Y_DATA = [
-                    [-800, -900, -1200, -1800, -2100, -2200, -2300],
+                    [-100, -900, -1200, -1800, -2100, -2200, -2300],
                     [-800, -1200, -1900, -8000, -2100, -2200, -2300],
                     [-800, -900, -1200, -1800, -2100, -2200, -2300],
                     [-800, -900, -1200, -1800, -2100, -2200, -2300]
                 ];
             }
-        }       
+        }
         if (gBackY0 < 0) {
             gBackY0 = 768;
         }
@@ -168,105 +180,125 @@ function update() {
             gBackY1 = 0;
         }
         if ((gImgH - gBackY1) > 0) {
-            gImageGt.draw( 343, gBackY1, 0, 0, gImgW, (gImgH + gBackY1));
+            gImageGt.draw(343, gBackY1, 0, 0, gImgW, (gImgH + gBackY1));
         }
-        drawString(0, 150, "red", "24px 'HG�n�p�p�S�V�b�NUB'", "Number of shots down" + SODN)
-        drawString(0, 200, "red", "24px  'HG�n�p�p�޼��UB'", "STAGE:" + gStage + "MAP POS:" + gMapPosY + "_" + (gMapPosY - 768));
-        drawString(0, 250, "red", "24px  'HG�n�p�p�޼��UB'", "gBackY0" + gBackY0);
-        drawString(0, 300, "red", "24px  'HG�n�p�p�޼��UB'", "gBackY1" + gBackY1);
+        drawString(0, 150, "red", "24px 'HG創英角ゴシックUB'", "gcanceloutY" + gcanceloutY)
+        drawString(0, 200, "red", "24px  'HG創英角ｺﾞｼｯｸUB'", "STAGE:" + gStage + "MAP POS:" + gMapPosY + "_" + (gMapPosY - 768));
+        drawString(0, 250, "red", "24px  'HG創英角ｺﾞｼｯｸUB'", "gBackY0" + gBackY0);
+        drawString(0, 300, "red", "24px  'HG創英角ｺﾞｼｯｸUB'", "gBackY1" + gBackY1);
+        drawString(300, 150, "red", "24px 'HG創英角ゴシックUB'", "－検証" + (-96) - gMapPosY)
         ////////////////////////////////////////////
-        ///////////////////////////////////////////�e
-        time++; //�e���ˊԊu�̐���
-        //�L�[���͏���
+        ///////////////////////////////////////////弾
+        time++; //弾発射間隔の制御
+        //キー入力処理
         if (isC()) {
+            Pdirection = 100;
             if (time >= 30) {
                 time = 0;
                 for (i = 0; i < BULLET_NUM; i++) {
-                    if (Bullet_limit >= 0) {//�c�e��
+                    if (Bullet_limit >= 0) {//残弾数
                         Bullet_limit++;
                         if (gBulletObj[i].getActive() == 0) {
                             var clickPos = getClickPos();
                             gBulletObj[i].shot((gPosX + 47), 658, 0, 8);
-                            break;              //�e��X   //�e��Y
+                            break;              //銃口X   //銃口Y
                         }
                     }
                 }
             }
         }
-          
 
-        //�X�V����
+
+        //更新処理
         for (i = 0; i < BULLET_NUM; i++) {
             gBulletObj[i].update();
         }
 
         /////////////////////////////////////////////////
-        /////////////////////////////////////////////////���@�ړ�
+        /////////////////////////////////////////////////自機移動
         if (isLeft() && gPosX >= 343) {         //hidari
             gPosX -= gPspeed;
             Pdirection = 0;
         } else if (isRight() && gPosX <= 923) {        //migi
             gPosX += gPspeed;
             Pdirection = 200;
-        } else {
-            Pdirection = 100;
         }
-        gImage.draw(gPosX, 658, Pdirection, 0, 100, 100); //���@hyouji
+
+
+
+        gImage.draw(gPosX, 658, Pdirection, 0, 100, 100); //自機hyouji
         ///////////////////////////////////////////
-        ///////////////////////////////////////////�G�e���^�\��
+        ///////////////////////////////////////////敵テンタ表示
         for (idx = 0; idx < OBJ_NUM; idx++) {
-            if (OBJ_Y_DATA[gStage][idx] > gMapPosY && OBJ_Y_DATA[gStage][idx] < (gMapPosY + 768)) {
-                var dir = getRand(10);//�G�v���v��
-                var dis = getRand(10); //�G�v���v��
+            if (OBJ_Y_DATA[gStage][idx] > gMapPosY && OBJ_Y_DATA[gStage][idx] < (gMapPosY + 100)) {
+                var dir = getRand(10); //敵プルプル
+                var dis = getRand(10); //敵プルプル
                 if (dir % 2 == 0) {
                     dir = -1;
                 } else {
                     dir = 1;
                 }
+
                 if ((gBulletX - (OBJ_X_DATA + dir * dis)) <= 80 && (gBulletX - (OBJ_X_DATA + dir * dis)) >= 0 && (gBulletY - (OBJ_Y_DATA[gStage][idx] - gMapPosY)) <= 80 && (gBulletY - (OBJ_Y_DATA[gStage][idx] - gMapPosY)) >= 0) {
-                    gImageBb.draw((OBJ_X_DATA + dir * dis), (OBJ_Y_DATA[gStage][idx] - gMapPosY), OBJ_SRCX_DATA[gStage][idx], 0, 80, 80);  //�G�ƒe���d�Ȃ�Ɣ����\��
-                    Bullet_hit = true//�e����
+                    gImageBb.draw((OBJ_X_DATA + dir * dis), (OBJ_Y_DATA[gStage][idx] - gMapPosY), OBJ_SRCX_DATA[gStage][idx], 0, 80, 80);  //敵と弾が重なると爆発表示
+                    Bullet_hit = 1; //弾消す
                     if ((gBulletY - (OBJ_Y_DATA[gStage][idx] - gMapPosY)) <= 10) {
-                        OBJ_Y_DATA[gStage][idx] = -9999; //���������������
-                        SODN++;//���Đ�+�P
+                        OBJ_Y_DATA[gStage][idx] = -9999; //爆発したら消える
+                        SODN++; //撃墜数+１
+                        Bullet_hit = 0;
                     }
-                }else{
-                gImageET.draw((OBJ_X_DATA + dir * dis), (OBJ_Y_DATA[gStage][idx] - gMapPosY), OBJ_SRCX_DATA[gStage][idx], 0, 80, 80); //����ȊO�͓G��\��
-                    Bullet_hit = false;
+                } else {
+                    gImageET.draw((OBJ_X_DATA + dir * dis), (OBJ_Y_DATA[gStage][idx] - gMapPosY), OBJ_SRCX_DATA[gStage][idx], 0, 80, 80); //それ以外は敵を表示
+                    Bullet_hit = 0;
+                }
+            } else if (OBJ_Y_DATA[gStage][idx] > (gMapPosY + 100) && OBJ_Y_DATA[gStage][idx] < (gMapPosY + 768)) {
+                var dir = getRand(10); //敵プルプル
+                var dis = getRand(10); //敵プルプル
+                if (dir % 2 == 0) {
+                    dir = -1;
+                } else {
+                    dir = 1;
+                }
+
+                if ((gBulletX - (OBJ_X_DATA + dir * dis)) <= 80 && (gBulletX - (OBJ_X_DATA + dir * dis)) >= 0 && (gBulletY - (OBJ_Y_DATA[gStage][idx] - gMapPosY)) <= 80 && (gBulletY - (OBJ_Y_DATA[gStage][idx] - gMapPosY)) >= 0) {
+                    gImageBb.draw((OBJ_X_DATA + dir * dis), (OBJ_Y_DATA[gStage][idx] - gMapPosY), OBJ_SRCX_DATA[gStage][idx], 0, 80, 80);  //敵と弾が重なると爆発表示
+                    Bullet_hit = 1; //弾消す
+                    if ((gBulletY - (OBJ_Y_DATA[gStage][idx] - gMapPosY)) <= 10) {
+                        OBJ_Y_DATA[gStage][idx] = -9999; //爆発したら消える
+                        SODN++; //撃墜数+１
+                        Bullet_hit = 0;
+                    }
+                } else {
+                    OBJ_Y_DATA[gStage][idx] -= gSpeedN;
+                    gImageET.draw((OBJ_X_DATA + dir * dis), (OBJ_Y_DATA[gStage][idx] - gMapPosY), OBJ_SRCX_DATA[gStage][idx], 0, 80, 80); //それ以外は敵を表示
+                    Bullet_hit = 0;
+                    if (isA()) {
+                        for (k = 0; k < EBULLET_NUM; k++) {
+                            if (gEBulletObj[k].getEActive() == 0) {
+                                var clickPos = getClickPos();
+                                gEBulletObj[k].Eshot(640, 180, 0, 10); //10gasokudo
+                                break;
+                            }
+                        }
+                    }
                 }
             }
+
         }
 
-        
-        
-    drawHP();
-    for (var i = 0; i < OBJ_Y_DATA; i++) {
-        if  (
-            checkCollision (
-                {x: gPosX, y: 658, width: 100, height: 100}, /*player*/
-                OBJ_Y_DATA[i]
-            )
-        ) {  
-            console.log("Collision detected with enemy " + i);
-            enemies.splice(i, 1); // Удаление врага
-            i--; // Скорректировать индекс после удаления
-            playerHP--; // Уменьшение здоровья
-        if (playerHP <= 0) {
-            alert("Game Over!");
-            return; // Остановка игры
-            }
+        for (k = 0; k < EBULLET_NUM; k++) {
+            gEBulletObj[k].update();
         }
+
+
+    drawHP(); 
     }
-}
+    //敵
 
-    
-    //�G
 
-            
-                    
 
-          
-           
+
+
 
 }
 function drawHP() {
@@ -292,41 +324,38 @@ function checkCollision(obj1, obj2) {       /*obj1 - player, obj2 - enemy*/
 }
 
 
-    //byouga    gazo   kyanpasu    gazousaizu
-    //gImage.draw(0, 0, 0, 0, 1366, 768);
+//byouga    gazo   kyanpasu    gazousaizu
+//gImage.draw(0, 0, 0, 0, 1366, 768);
 
 
 
 /////////////////////////////////////
-// �e�N���X
+// 弾クラス
 /////////////////////////////////////
 function bullet() {
-    // �R���X�g���N�^
+    // コンストラクタ
     var mSpeed = 10;
     var mPoint = { x: 0, y: 0 };
     var mAngle = 0;
     var mRadians, mMoveX, mMoveY;
     var mActiveFlg = 0; // 0:InActive 1:Active
     /////////////////////////////////////
-    // �X�V�֐�
+    // 更新関数
     this.update = function() {
-        drawString(300, 50, "red", "24px 'HG�n�p�p�S�V�b�NUB'", "mPoint.x" + mPoint.x)
-        drawString(300, 100, "red", "24px 'HG�n�p�p�S�V�b�NUB'", "mPoint.y" + mPoint.y)
-        drawString(300, 150, "red", "24px 'HG�n�p�p�S�V�b�NUB'", "Bullet_hit" + Bullet_hit)
+
         if (mActiveFlg) {
-            gImagePs.draw(mPoint.x, mPoint.y, 0, 0, 10, 40); //�e�ʒu         
+            gImagePs.draw(mPoint.x, mPoint.y, 0, 0, 10, 40); //弾位置         
             mPoint.x -= mMoveY;
             mPoint.y -= mMoveX;
             gBulletX = mPoint.x;
             gBulletY = mPoint.y;
-            // ��ʊO����
+            // 画面外処理
             if ((mPoint.x + 50 > 1366 || mPoint.x < 0) || (mPoint.y + 50 > 768 || mPoint.y < 0)) {
                 mActiveFlg = 0;
             }
-
         }
     }
-    
+
     this.setActive = function(flg) {
         mActiveFlg = flg;
     }
@@ -347,4 +376,53 @@ function bullet() {
         mActiveFlg = 1;
     }
 
+}
+
+
+
+/////////////////////////////////////
+// 敵弾クラス
+/////////////////////////////////////
+function Ebullet() {
+    // コンストラクタ
+    var EmSpeed = 10;
+    var EmPoint = { x: 0, y: 0 };
+    var EmAngle = 0;
+    var EmRadians, EmMoveX, EmMoveY;
+    var EmActiveFlg = 0; // 0:InActive 1:Active
+    /////////////////////////////////////
+    // 更新関数
+
+    this.update = function() {
+        drawString(300, 50, "red", "24px 'HG創英角ゴシックUB'", "EmPoint.x" + EmPoint.x)
+        drawString(300, 100, "red", "24px 'HG創英角ゴシックUB'", "EmPoint.y" + EmPoint.y)
+        if (EmActiveFlg) {
+            drawFill(EmPoint.x, EmPoint.y, 10, 10, "red");
+            EmPoint.x -= EmMoveY;
+            EmPoint.y += EmMoveX;
+            // 画面外処理
+            if (EmPoint.y + 50 > 768 || EmPoint.y < -868) {
+                EmActiveFlg = 0;
+            }
+        }
+    }
+    this.setEActive = function(Eflg) {
+        EmActiveFlg = Eflg;
+    }
+    this.getEActive = function() {
+        return EmActiveFlg;
+    }
+    this.getEPos = function() {
+        return [EmPoint.x, EmPoint.y];
+    }
+    this.Eshot = function(x, y, Eangle, Espeed) {
+        EmPoint.x = x;
+        EmPoint.y = y;
+        EmAngle = Eangle;
+        EmSpeed = Espeed;
+        EmRadians = EmAngle * Math.PI / 180;
+        EmMoveX = Math.cos(EmRadians) * EmSpeed;
+        EmMoveY = Math.sin(EmRadians) * EmSpeed;
+        EmActiveFlg = 1;
+    }
 }
