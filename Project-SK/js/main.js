@@ -292,6 +292,7 @@ function update() {
 
 
     drawHP(); 
+    checkCollision(gPosX, Ebullet);
     }
     //敵
 
@@ -314,7 +315,7 @@ function drawHP() {
         }
     }
 }
-function checkCollision(obj1, obj2) {       /*obj1 - player, obj2 - enemy*/
+function checkCollision(obj1, obj2) {       /*obj1 - player, obj2 - enemy/bullet*/
     return (
         obj1.x < obj2.x + obj2.width && /*левая сторона obj1 левее правой стороной obj2*/
         obj1.x + obj1.width > obj2.x && /*правая сторона obj1 правее левой стороны obj2*/
