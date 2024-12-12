@@ -44,6 +44,12 @@ var maxHp = 5;              /*Maximum HP*/
 var hpStartX = 1050;        /* HP Bar position X axis*/
 var hpStartY = 658;         /* HP Bar position Y axis*/
 var hpSpacing = 5;          /*Space between hearts*/
+const playerPos = {
+    x: gPosX,
+    y: 658,
+    width: 100,
+    height: 100,
+};
 
 var OBJ_NUM = 7;
 
@@ -111,6 +117,7 @@ function update() {
         time = 0;   // ストーリー画面遷移
         gPosX = 633;    //自機座標
         Pdirection = 100;   //自機向き制御
+
     }
 
 
@@ -290,10 +297,24 @@ function update() {
             gEBulletObj[k].update();
         }
 
+    for (let i = 0; i < EBULLET_NUM; i++) {
+        const eBullet = gEBulletObj[i];
+        if (eBullet.getEActive() && checkCollision(playerPos, eBullet)) {
 
-    drawHP(); 
-    checkCollision(gPosX, Ebullet);
+            playerHP--;
+
+            eBullet.setEActive(0); /*деактивация пули*/
+            
+            if (playerHP <= 0) {
+                gScene = 3; /* сцена окончания*/
+            }
+        }
     }
+    
+    drawHP(); 
+
+    }
+    
     //敵
 
 
@@ -314,14 +335,16 @@ function drawHP() {
             hpEmpty.draw(heartX, hpStartY, hpHeartImgWidth, hpHeartImgHeight, "gray");
         }
     }
+
 }
+
 function checkCollision(obj1, obj2) {       /*obj1 - player, obj2 - enemy/bullet*/
     return (
         obj1.x < obj2.x + obj2.width && /*левая сторона obj1 левее правой стороной obj2*/
         obj1.x + obj1.width > obj2.x && /*правая сторона obj1 правее левой стороны obj2*/
         obj1.y < obj2.y + obj2.height && /*верхняя сторона obj1 выше нижней стороны obj2*/
         obj1.y + obj1.height > obj2.y     /*Нижняя сторона obj1 ниже верхней стороны obj2*/
-    )
+    );
 }
 
 
