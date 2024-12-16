@@ -95,7 +95,7 @@ function update() {
         gImageBb = new image("./images/Bombeffect.png");
         hpHeartImg = new image("./images/hpHeart.png");
         hpEmpty = new image("./images/hpEmpty.png");
-        gameOverImg = new image("./images/gameOver/png");
+        gameOverImg = new image("./images/gameOver.png");
         gPspeed = 10;    //自機速度
         SODN = 0; //撃墜数
         gBackX = 0;
@@ -299,7 +299,8 @@ function update() {
         for (k = 0; k < EBULLET_NUM; k++) {
             gEBulletObj[k].update();
         }
-
+    
+    var collisionsThisFrame = 0;
     for (let i = 0; i < EBULLET_NUM; i++) {
         const eBullet = gEBulletObj[i];
         // console.log("Player: x=" + playerPos.x + ", y=" + playerPos.y + ", w=" + playerPos.width + ", h=" + playerPos.height);
@@ -311,22 +312,31 @@ function update() {
             playerHP--;
 
             eBullet.setEActive(0); /*деактивация пули*/
+            eBullet.collidedFrame = true;
+            collisionsThisFrame++;
             console.log("HP after decrement:", playerHP);
             drawHP();
             
             if (playerHP <= 0) {
                 console.log("Game Over! Final HP:", playerHP);
                 gScene = 3; /* сцена окончания*/
+                break; 
             }
         }
-
-        
+    }
+    // Сбрасываем флаги ПОСЛЕ обработки всех столкновений в кадре
+    for (let i = 0; i < EBULLET_NUM; i++){
+        gEBulletObj[i].hasCollidedThisFrame=false;
     }
     
     drawHP(); 
 
-    } else if (gscene == 3) {
-        gameOverImg.draw(0, 0, 0, 0, 1366, 786)
+    } else if (gScene == 3) {
+        // drawFill(0, 0, 1366, 768, BG_COLOR[gStage]);
+        gameOverImg.draw(0, 0, 0, 0, 1366, 786);
+        if (isC()) {
+            restartGame();
+        }
     }
     
     //敵
@@ -430,6 +440,7 @@ function Ebullet() {
     var EmActiveFlg = 0; // 0:InActive 1:Active
     this.width = 10;
     this.height = 10;
+    this.collidedFrame = false;
     /////////////////////////////////////
     // 更新関数
 
@@ -467,4 +478,12 @@ function Ebullet() {
         // console.log("Bullet activated!");
     }
     this.EmPoint = EmPoint;
+}
+
+function restartGame() {
+    gFirstFlg = 1;
+    playerHP = 3;
+    gPosX = 633;
+    Pdirection = 0;
+    playerPos.x = gPosX;
 }
