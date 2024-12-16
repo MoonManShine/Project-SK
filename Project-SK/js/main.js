@@ -44,7 +44,12 @@ var maxHp = 5;
 var hpStartX = 1050;
 var hpStartY = 658;
 var hpSpacing = 5;
-
+var playerPos = {
+    x: gPosX,
+    y: 658,
+    width: 100,
+    height: 100,
+};
 var OBJ_NUM = 7;
 
 var OBJ_X_DATA = 600;
