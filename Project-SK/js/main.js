@@ -35,9 +35,9 @@ var gSpeedN = 2;
 var gMapPosY;
 var gcanceloutY; //マップポス打ち消し用
 var gStage;
-var hpHeartImg;
-var hpEmpty;
-var hpHeartImgWidth = 100;
+var hpHeartImg;             /*filled heart*/
+var hpEmpty;                /*Empty Heart*/
+var hpHeartImgWidth = 100;  
 var hpHeartImgHeight = 100;
 var playerHP = 3;
 var maxHp = 5;
@@ -88,6 +88,7 @@ function update() {
         gImageBb = new image("./images/Bombeffect.png");
         hpHeartImg = new image("./images/hpHeart.png");
         hpEmpty = new image("./images/hpEmpty.png");
+        gameOverImg = new image("./images/gameOver.png");
         gPspeed = 10;    //自機速度
         SODN = 0; //撃墜数
         gBackX = 0;
@@ -107,10 +108,11 @@ function update() {
         }
         gDispCnt = 0;
         gScene = 0; //画面遷移     
-        gFirstFlg = 0;      //初期化用
         time = 0;   // ストーリー画面遷移
         gPosX = 633;    //自機座標
         Pdirection = 100;   //自機向き制御
+        gFirstFlg = 0;      //初期化用
+
     }
 
 
@@ -223,6 +225,7 @@ function update() {
             gPosX += gPspeed;
             Pdirection = 200;
         }
+        playerPos.x = gPosX;
 
 
 
@@ -289,10 +292,46 @@ function update() {
         for (k = 0; k < EBULLET_NUM; k++) {
             gEBulletObj[k].update();
         }
+    
+    var collisionsThisFrame = 0;
+    for (let i = 0; i < EBULLET_NUM; i++) {
+        const eBullet = gEBulletObj[i];
+        // console.log("Player: x=" + playerPos.x + ", y=" + playerPos.y + ", w=" + playerPos.width + ", h=" + playerPos.height);
+        // console.log("Bullet: x=" + eBullet.EmPoint.x + ", y=" + eBullet.EmPoint.y + ", w=" + eBullet.width + ", h=" + eBullet.height);
+        // console.log("Bullet active:", eBullet.getEActive());
+        if (eBullet.getEActive() && checkCollision(playerPos, { x: eBullet.EmPoint.x, y: eBullet.EmPoint.y, width: eBullet.width, height: eBullet.height})) {
+            console.log("HP before decrement:", playerHP);
+            console.log("Collision detected"); /*отладка*/
+            playerHP--;
 
-
-    drawHP(); 
+            eBullet.setEActive(0); /*деактивация пули*/
+            eBullet.collidedFrame = true;
+            collisionsThisFrame++;
+            console.log("HP after decrement:", playerHP);
+            drawHP();
+            
+            if (playerHP <= 0) {
+                console.log("Game Over! Final HP:", playerHP);
+                gScene = 3; /* сцена окончания*/
+                break; 
+            }
+        }
     }
+    // Сбрасываем флаги ПОСЛЕ обработки всех столкновений в кадре
+    for (let i = 0; i < EBULLET_NUM; i++){
+        gEBulletObj[i].hasCollidedThisFrame=false;
+    }
+    
+    drawHP(); 
+
+    } else if (gScene == 3) {
+        // drawFill(0, 0, 1366, 768, BG_COLOR[gStage]);
+        gameOverImg.draw(0, 0, 0, 0, 1366, 786);
+        if (isC()) {
+            restartGame();
+        }
+    }
+    
     //敵
 
 
@@ -310,9 +349,19 @@ function drawHP() {
             hpHeartImg.draw(heartX, hpStartY, 0, 0, hpHeartImgWidth, hpHeartImgHeight);
         } else {
             // Если нужно отображать "пустые" сердца, можно добавить другое изображение
-            hpEmpty.draw(heartX, hpStartY, hpHeartImgWidth, hpHeartImgHeight, "gray");
+            hpEmpty.draw(heartX, hpStartY, 0, 0, hpHeartImgWidth, hpHeartImgHeight);
         }
     }
+
+}
+
+function checkCollision(obj1, obj2) {       /*obj1 - player, obj2 - enemy/bullet*/
+    return (
+        obj1.x < obj2.x + obj2.width && /*левая сторона obj1 левее правой стороной obj2*/
+        obj1.x + obj1.width > obj2.x && /*правая сторона obj1 правее левой стороны obj2*/
+        obj1.y < obj2.y + obj2.height && /*верхняя сторона obj1 выше нижней стороны obj2*/
+        obj1.y + obj1.height > obj2.y     /*Нижняя сторона obj1 ниже верхней стороны obj2*/
+    );
 }
 
 
@@ -382,6 +431,9 @@ function Ebullet() {
     var EmAngle = 0;
     var EmRadians, EmMoveX, EmMoveY;
     var EmActiveFlg = 0; // 0:InActive 1:Active
+    this.width = 10;
+    this.height = 10;
+    this.collidedFrame = false;
     /////////////////////////////////////
     // 更新関数
 
@@ -416,5 +468,15 @@ function Ebullet() {
         EmMoveX = Math.cos(EmRadians) * EmSpeed;
         EmMoveY = Math.sin(EmRadians) * EmSpeed;
         EmActiveFlg = 1;
+        // console.log("Bullet activated!");
     }
+    this.EmPoint = EmPoint;
+}
+
+function restartGame() {
+    gFirstFlg = 1;
+    playerHP = 3;
+    gPosX = 633;
+    Pdirection = 0;
+    playerPos.x = gPosX;
 }
