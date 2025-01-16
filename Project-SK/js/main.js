@@ -52,12 +52,7 @@ var playerPos = {
 };
 var OBJ_NUM = 7;
 
-var OBJ_X_DATA = [];
-for (let i = 0; i < OBJ_NUM; i++) {
-    OBJ_X_DATA[i] = Math.random() * (1366 - 80- 343 * 2) + 343; // Случайная начальная позиция по X
-};
-var ENEMY_MOVE_SPEED = 2;
-const ENEMY_FIRE_INTERVAL = 60;
+var OBJ_X_DATA = 600;
 
 var OBJ_Y_DATA = [
     [-800, -900, -1200, -1800, -2100, -2200, -2300],
@@ -242,62 +237,62 @@ function update() {
         gImage.draw(gPosX, 658, Pdirection, 0, 100, 100); //自機hyouji
         ///////////////////////////////////////////
         ///////////////////////////////////////////敵テンタ表示
-        // for (idx = 0; idx < OBJ_NUM; idx++) {
-        //     if (OBJ_Y_DATA[gStage][idx] > gMapPosY && OBJ_Y_DATA[gStage][idx] < (gMapPosY + 100)) {
-        //         var dir = getRand(10); //敵プルプル
-        //         var dis = getRand(10); //敵プルプル
-        //         if (dir % 2 == 0) {
-        //             dir = -1;
-        //         } else {
-        //             dir = 1;
-        //         }
+        for (idx = 0; idx < OBJ_NUM; idx++) {
+            if (OBJ_Y_DATA[gStage][idx] > gMapPosY && OBJ_Y_DATA[gStage][idx] < (gMapPosY + 100)) {
+                var dir = getRand(10); //敵プルプル
+                var dis = getRand(10); //敵プルプル
+                if (dir % 2 == 0) {
+                    dir = -1;
+                } else {
+                    dir = 1;
+                }
 
-        //         if ((gBulletX - (OBJ_X_DATA + dir * dis)) <= 80 && (gBulletX - (OBJ_X_DATA + dir * dis)) >= 0 && (gBulletY - (OBJ_Y_DATA[gStage][idx] - gMapPosY)) <= 80 && (gBulletY - (OBJ_Y_DATA[gStage][idx] - gMapPosY)) >= 0) {
-        //             gImageBb.draw((OBJ_X_DATA + dir * dis), (OBJ_Y_DATA[gStage][idx] - gMapPosY), OBJ_SRCX_DATA[gStage][idx], 0, 80, 80);  //敵と弾が重なると爆発表示
-        //             Bullet_hit = 1; //弾消す
-        //             if ((gBulletY - (OBJ_Y_DATA[gStage][idx] - gMapPosY)) <= 10) {
-        //                 OBJ_Y_DATA[gStage][idx] = -9999; //爆発したら消える
-        //                 SODN++; //撃墜数+１
-        //                 Bullet_hit = 0;
-        //             }
-        //         } else {
-        //             gImageET.draw((OBJ_X_DATA + dir * dis), (OBJ_Y_DATA[gStage][idx] - gMapPosY), OBJ_SRCX_DATA[gStage][idx], 0, 80, 80); //それ以外は敵を表示
-        //             Bullet_hit = 0;
-        //         }
-        //     } else if (OBJ_Y_DATA[gStage][idx] > (gMapPosY + 100) && OBJ_Y_DATA[gStage][idx] < (gMapPosY + 768)) {
-        //         var dir = getRand(10); //敵プルプル
-        //         var dis = getRand(10); //敵プルプル
-        //         if (dir % 2 == 0) {
-        //             dir = -1;
-        //         } else {
-        //             dir = 1;
-        //         }
+                if ((gBulletX - (OBJ_X_DATA + dir * dis)) <= 80 && (gBulletX - (OBJ_X_DATA + dir * dis)) >= 0 && (gBulletY - (OBJ_Y_DATA[gStage][idx] - gMapPosY)) <= 80 && (gBulletY - (OBJ_Y_DATA[gStage][idx] - gMapPosY)) >= 0) {
+                    gImageBb.draw((OBJ_X_DATA + dir * dis), (OBJ_Y_DATA[gStage][idx] - gMapPosY), OBJ_SRCX_DATA[gStage][idx], 0, 80, 80);  //敵と弾が重なると爆発表示
+                    Bullet_hit = 1; //弾消す
+                    if ((gBulletY - (OBJ_Y_DATA[gStage][idx] - gMapPosY)) <= 10) {
+                        OBJ_Y_DATA[gStage][idx] = -9999; //爆発したら消える
+                        SODN++; //撃墜数+１
+                        Bullet_hit = 0;
+                    }
+                } else {
+                    gImageET.draw((OBJ_X_DATA + dir * dis), (OBJ_Y_DATA[gStage][idx] - gMapPosY), OBJ_SRCX_DATA[gStage][idx], 0, 80, 80); //それ以外は敵を表示
+                    Bullet_hit = 0;
+                }
+            } else if (OBJ_Y_DATA[gStage][idx] > (gMapPosY + 100) && OBJ_Y_DATA[gStage][idx] < (gMapPosY + 768)) {
+                var dir = getRand(10); //敵プルプル
+                var dis = getRand(10); //敵プルプル
+                if (dir % 2 == 0) {
+                    dir = -1;
+                } else {
+                    dir = 1;
+                }
 
-        //         if ((gBulletX - (OBJ_X_DATA + dir * dis)) <= 80 && (gBulletX - (OBJ_X_DATA + dir * dis)) >= 0 && (gBulletY - (OBJ_Y_DATA[gStage][idx] - gMapPosY)) <= 80 && (gBulletY - (OBJ_Y_DATA[gStage][idx] - gMapPosY)) >= 0) {
-        //             gImageBb.draw((OBJ_X_DATA + dir * dis), (OBJ_Y_DATA[gStage][idx] - gMapPosY), OBJ_SRCX_DATA[gStage][idx], 0, 80, 80);  //敵と弾が重なると爆発表示
-        //             Bullet_hit = 1; //弾消す
-        //             if ((gBulletY - (OBJ_Y_DATA[gStage][idx] - gMapPosY)) <= 10) {
-        //                 OBJ_Y_DATA[gStage][idx] = -9999; //爆発したら消える
-        //                 SODN++; //撃墜数+１
-        //                 Bullet_hit = 0;
-        //             }
-        //         } else {
-        //             OBJ_Y_DATA[gStage][idx] -= gSpeedN;
-        //             gImageET.draw((OBJ_X_DATA + dir * dis), (OBJ_Y_DATA[gStage][idx] - gMapPosY), OBJ_SRCX_DATA[gStage][idx], 0, 80, 80); //それ以外は敵を表示
-        //             Bullet_hit = 0;
-        //             if (isA()) {
-        //                 for (k = 0; k < EBULLET_NUM; k++) {
-        //                     if (gEBulletObj[k].getEActive() == 0) {
-        //                         var clickPos = getClickPos();
-        //                         gEBulletObj[k].Eshot(640, 180, 0, 10); //10gasokudo
-        //                         break;
-        //                     }
-        //                 }
-        //             }
-        //         }
-        //     }
+                if ((gBulletX - (OBJ_X_DATA + dir * dis)) <= 80 && (gBulletX - (OBJ_X_DATA + dir * dis)) >= 0 && (gBulletY - (OBJ_Y_DATA[gStage][idx] - gMapPosY)) <= 80 && (gBulletY - (OBJ_Y_DATA[gStage][idx] - gMapPosY)) >= 0) {
+                    gImageBb.draw((OBJ_X_DATA + dir * dis), (OBJ_Y_DATA[gStage][idx] - gMapPosY), OBJ_SRCX_DATA[gStage][idx], 0, 80, 80);  //敵と弾が重なると爆発表示
+                    Bullet_hit = 1; //弾消す
+                    if ((gBulletY - (OBJ_Y_DATA[gStage][idx] - gMapPosY)) <= 10) {
+                        OBJ_Y_DATA[gStage][idx] = -9999; //爆発したら消える
+                        SODN++; //撃墜数+１
+                        Bullet_hit = 0;
+                    }
+                } else {
+                    OBJ_Y_DATA[gStage][idx] -= gSpeedN;
+                    gImageET.draw((OBJ_X_DATA + dir * dis), (OBJ_Y_DATA[gStage][idx] - gMapPosY), OBJ_SRCX_DATA[gStage][idx], 0, 80, 80); //それ以外は敵を表示
+                    Bullet_hit = 0;
+                    if (isA()) {
+                        for (k = 0; k < EBULLET_NUM; k++) {
+                            if (gEBulletObj[k].getEActive() == 0) {
+                                var clickPos = getClickPos();
+                                gEBulletObj[k].Eshot(640, 180, 0, 10); //10gasokudo
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
 
-        // }
+        }
 
         for (k = 0; k < EBULLET_NUM; k++) {
             gEBulletObj[k].update();
@@ -342,55 +337,6 @@ function update() {
         }
     }
     
-    function updateEnemy(idx) {
-        // Проверка, находится ли враг в пределах видимости
-        if (OBJ_Y_DATA[gStage][idx] > gMapPosY + 100 && OBJ_Y_DATA[gStage][idx] < gMapPosY + 768) {
-    
-            // Постоянное перемещение влево-вправо
-            const dir = (Math.random() < 0.5) ? -1 : 1; // Случайное направление (-1 или 1)
-            OBJ_X_DATA[idx] += dir * ENEMY_MOVE_SPEED;
-    
-            // Проверка выхода за границы экрана
-            if (OBJ_X_DATA[idx] < 0) {
-                OBJ_X_DATA[idx] = 0;
-            } else if (OBJ_X_DATA[idx] > 640 - 80) {
-                OBJ_X_DATA[idx] = 640 - 80;
-            }
-    
-            // Проверка столкновения с пулей
-            if (gBulletX >= OBJ_X_DATA[idx] && gBulletX <= OBJ_X_DATA[idx] + 80 &&
-                gBulletY >= OBJ_Y_DATA[gStage][idx] - gMapPosY && gBulletY <= OBJ_Y_DATA[gStage][idx] - gMapPosY + 80) {
-                gImageBb.draw(OBJ_X_DATA[idx], OBJ_Y_DATA[gStage][idx] - gMapPosY, OBJ_SRCX_DATA[gStage][idx], 0, 80, 80);
-                Bullet_hit = 1;
-                if (gBulletY <= OBJ_Y_DATA[gStage][idx] - gMapPosY + 10) {
-                    OBJ_Y_DATA[gStage][idx] = -9999;
-                    SODN++;
-                    Bullet_hit = 0;
-                }
-                return; // Важно: выходим из функции после столкновения
-            }
-    
-            // Движение врага вниз
-            OBJ_Y_DATA[gStage][idx] -= gSpeedN;
-    
-            // Отрисовка врага
-            gImageET.draw(OBJ_X_DATA[idx], OBJ_Y_DATA[gStage][idx] - gMapPosY, OBJ_SRCX_DATA[gStage][idx], 0, 80, 80);
-    
-            // Автоматическая стрельба (каждые ENEMY_FIRE_INTERVAL кадров)
-            if (mainLoop % ENEMY_FIRE_INTERVAL === 60) {
-                for (let k = 0; k < EBULLET_NUM; k++) {
-                    if (gEBulletObj[k].getEActive() === 0) {
-                        gEBulletObj[k].Eshot(OBJ_X_DATA[idx] + 40, OBJ_Y_DATA[gStage][idx] - gMapPosY + 80, 0, 10); // Стрельба из центра врага
-                        break;
-                    }
-                }
-            }
-        }
-    }
-    for (let i = 0; i < OBJ_NUM; i++) {
-        updateEnemy(i);
-    };
-    updateEnemy();
     //敵
 
 
