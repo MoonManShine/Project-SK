@@ -39,19 +39,17 @@ var hpHeartImg;             /*filled heart*/
 var hpEmpty;                /*Empty Heart*/
 var hpHeartImgWidth = 100;  
 var hpHeartImgHeight = 100;
-var playerHP = 3;           /*current player HP*/
-var maxHp = 5;              /*Maximum HP*/
-var hpStartX = 1050;        /* HP Bar position X axis*/
-var hpStartY = 658;         /* HP Bar position Y axis*/
-var hpSpacing = 5;          /*Space between hearts*/
+var playerHP = 3;
+var maxHp = 5;
+var hpStartX = 1050;
+var hpStartY = 658;
+var hpSpacing = 5;
 var playerPos = {
     x: gPosX,
     y: 658,
     width: 100,
     height: 100,
 };
-var gameOverImg;
-
 var OBJ_NUM = 7;
 
 var OBJ_X_DATA = 600;
