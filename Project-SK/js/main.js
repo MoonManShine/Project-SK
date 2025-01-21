@@ -86,7 +86,7 @@ function update() {
         gImageT = new image("./images/TitleScreen.png"); //タイトル
         gImageS1 = new image("./images/Summary1.png"); //ストーリー１２３
         gImageS2 = new image("./images/Summary2.png");
-        gImageGt = new image("./images/gameTemplatepng.png"); //背景
+        gImageGt = new image("./images/Template.png"); //背景
         gImage = new image("./images/PlayerG.png"); //自機
         gImagePs = new image("./images/Pshot.png"); //弾自機
         gImageET = new image("./images/Tentacle.png"); //テンタ
