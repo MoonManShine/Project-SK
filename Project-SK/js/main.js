@@ -491,3 +491,11 @@ function update() {
         }
     }
 }
+
+function restartGame() {
+    gFirstFlg = 1;
+    playerHP = 3;
+    gPosX = 633;
+    Pdirection = 0;
+    playerPos.x = gPosX;
+}
