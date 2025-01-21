@@ -41,6 +41,21 @@ var gSpeedN = 2;
 var gMapPosY;
 var gcanceloutY; //マップポス打ち消し用
 var gStage;
+var hpHeartImg;             /*filled heart*/
+var hpEmpty;                /*Empty Heart*/
+var hpHeartImgWidth = 100;  
+var hpHeartImgHeight = 100;
+var playerHP = 3;
+var maxHp = 5;
+var hpStartX = 1050;
+var hpStartY = 658;
+var hpSpacing = 5;
+var playerPos = {
+    x: gPosX,
+    y: 658,
+    width: 100,
+    height: 100,
+};
 var difficulty = 0;
 var OBJ_NUM = 7;
 
@@ -101,6 +116,9 @@ function update() {
         gImageET = new image("./images/Tentacle.png"); //テンタ
         gImageEO = new image("./images/Octopus.png"); //オクト
         gImageBb = new image("./images/Bombeffect.png");
+        hpHeartImg = new image("./images/hpHeart.png");
+        hpEmpty = new image("./images/hpEmpty.png");
+        gameOverImg = new image("./images/gameOver.png");
         gImageAb = new image("./images/Bulletup.png"); //アイテム弾補充
         gImageAsh = new image("./images/Shield.png"); //アイテムシールド
         gImageAsp = new image("./images/Speedup.png"); //アイテムスピードアップ
@@ -268,6 +286,7 @@ function update() {
             gPosX += gPspeed;
             Pdirection = 200;
         }
+        playerPos.x = gPosX;
 
 
 
@@ -382,16 +401,18 @@ function update() {
             }
         }
     }
+    var collisionsThisFrame = 0;
+        for (let i = 0; i < EBULLET_NUM; i++) {
+        const eBullet = gEBulletObj[i];
+// console.log("Player: x=" + playerPos.x + ", y=" + playerPos.y + ", w=" + playerPos.width + ", h=" + playerPos.height);
+// console.log("Bullet: x=" + eBullet.EmPoint.x + ", y=" + eBullet.EmPoint.y + ", w=" + eBullet.width + ", h=" + eBullet.height);
+// console.log("Bullet active:", eBullet.getEActive()); 
+    
+    }
 
 
-    //byouga    gazo   kyanpasu    gazousaizu
-    //gImage.draw(0, 0, 0, 0, 1366, 768);
 
 
-
-    /////////////////////////////////////
-    // 弾クラス
-    /////////////////////////////////////
     function bullet() {
         // コンストラクタ
         var mSpeed = 10;
