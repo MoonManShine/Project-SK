@@ -50,13 +50,7 @@ var playerPos = {
     width: 100,
     height: 100,
 };
-<<<<<<< HEAD
-<<<<<<< HEAD
 var difficulty = 0;
-=======
->>>>>>> parent of ddb85cb (Merge branch 'main' into Ainur)
-=======
->>>>>>> parent of c7bc000 (Merge branch 'main' into Ainur)
 var OBJ_NUM = 7;
 
 var OBJ_X_DATA = 600;
@@ -101,17 +95,11 @@ function update() {
         hpHeartImg = new image("./images/hpHeart.png");
         hpEmpty = new image("./images/hpEmpty.png");
         gameOverImg = new image("./images/gameOver.png");
-<<<<<<< HEAD
-<<<<<<< HEAD
         gImageAb = new image("./images/Bulletup.png"); //アイテム弾補充
         gImageAsh = new image("./images/Shield.png"); //アイテムシールド
         gImageAsp = new image("./images/Speedup.png"); //アイテムスピードアップ
         gImageNormal = new image("./images/Normal.png");
         gImageHard = new image("./images/Hard.png");
-=======
->>>>>>> parent of ddb85cb (Merge branch 'main' into Ainur)
-=======
->>>>>>> parent of c7bc000 (Merge branch 'main' into Ainur)
         gPspeed = 10;    //自機速度
         SODN = 0; //撃墜数
         gBackX = 0;
@@ -340,234 +328,13 @@ function update() {
             }
         }
     }
-<<<<<<< HEAD
-<<<<<<< HEAD
-    var collisionsThisFrame = 0;
-        for (let i = 0; i < EBULLET_NUM; i++) {
-        const eBullet = gEBulletObj[i];
-// console.log("Player: x=" + playerPos.x + ", y=" + playerPos.y + ", w=" + playerPos.width + ", h=" + playerPos.height);
-// console.log("Bullet: x=" + eBullet.EmPoint.x + ", y=" + eBullet.EmPoint.y + ", w=" + eBullet.width + ", h=" + eBullet.height);
-// console.log("Bullet active:", eBullet.getEActive()); 
-    
-    }
-
-
-
-
-    function bullet() {
-        // コンストラクタ
-        var mSpeed = 10;
-        var mPoint = { x: 0, y: 0 };
-        var mAngle = 0;
-        var mRadians, mMoveX, mMoveY;
-        var mActiveFlg = 0; // 0:InActive 1:Active
-        /////////////////////////////////////
-        // 更新関数
-        this.update = function() {
-
-            if (mActiveFlg) {
-                gImagePs.draw(mPoint.x, mPoint.y, 0, 0, 10, 40); //弾位置         
-                mPoint.x -= mMoveY;
-                mPoint.y -= mMoveX;
-                gBulletX = mPoint.x;
-                gBulletY = mPoint.y;
-                // 画面外処理
-                if ((mPoint.x + 50 > 1366 || mPoint.x < 0) || (mPoint.y + 50 > 768 || mPoint.y < 0)) {
-                    mActiveFlg = 0;
-                }
-                if (Bullet_hit = 0) {
-                    mActiveFlg = 0;
-                    debug++;
-                }
-            }
-        }
-
-        this.setActive = function(flg) {
-            mActiveFlg = flg;
-        }
-        this.getActive = function() {
-            return mActiveFlg;
-        }
-        this.getPos = function() {
-            return [mPoint.x, mPoint.y];
-        }
-        this.shot = function(x, y, angle, speed) {
-            mPoint.x = x;
-            mPoint.y = y;
-            mAngle = angle;
-            mSpeed = speed;
-            mRadians = mAngle * Math.PI / 180;
-            mMoveX = Math.cos(mRadians) * mSpeed;
-            mMoveY = Math.sin(mRadians) * mSpeed;
-            mActiveFlg = 1;
-        }
-
-=======
     // Сбрасываем флаги ПОСЛЕ обработки всех столкновений в кадре
     for (let i = 0; i < EBULLET_NUM; i++){
         gEBulletObj[i].hasCollidedThisFrame=false;
->>>>>>> parent of ddb85cb (Merge branch 'main' into Ainur)
     }
     
     drawHP(); 
 
-    } else if (gScene == 3) {
-        // drawFill(0, 0, 1366, 768, BG_COLOR[gStage]);
-        gameOverImg.draw(0, 0, 0, 0, 1366, 786);
-        if (isC()) {
-            restartGame();
-        }
-    }
-    
-    //敵
-
-
-
-
-
-
-}
-function drawHP() {
-    for (var i = 0; i < maxHp; i++) {
-         var heartX = hpStartX + i * (hpHeartImgWidth + hpSpacing);
-
-         if (i < playerHP) {
-            // Отрисовка заполненного сердца
-            hpHeartImg.draw(heartX, hpStartY, 0, 0, hpHeartImgWidth, hpHeartImgHeight);
-        } else {
-            // Если нужно отображать "пустые" сердца, можно добавить другое изображение
-            hpEmpty.draw(heartX, hpStartY, 0, 0, hpHeartImgWidth, hpHeartImgHeight);
-        }
-=======
-    // Сбрасываем флаги ПОСЛЕ обработки всех столкновений в кадре
-    for (let i = 0; i < EBULLET_NUM; i++){
-        gEBulletObj[i].hasCollidedThisFrame=false;
->>>>>>> parent of c7bc000 (Merge branch 'main' into Ainur)
-    }
-    
-    drawHP(); 
-
-<<<<<<< HEAD
-}
-
-function checkCollision(obj1, obj2) {       /*obj1 - player, obj2 - enemy/bullet*/
-    return (
-        obj1.x < obj2.x + obj2.width && /*левая сторона obj1 левее правой стороной obj2*/
-        obj1.x + obj1.width > obj2.x && /*правая сторона obj1 правее левой стороны obj2*/
-        obj1.y < obj2.y + obj2.height && /*верхняя сторона obj1 выше нижней стороны obj2*/
-        obj1.y + obj1.height > obj2.y     /*Нижняя сторона obj1 ниже верхней стороны obj2*/
-    );
-}
-
-
-//byouga    gazo   kyanpasu    gazousaizu
-//gImage.draw(0, 0, 0, 0, 1366, 768);
-
-
-
-/////////////////////////////////////
-// 弾クラス
-/////////////////////////////////////
-function bullet() {
-    // コンストラクタ
-    var mSpeed = 10;
-    var mPoint = { x: 0, y: 0 };
-    var mAngle = 0;
-    var mRadians, mMoveX, mMoveY;
-    var mActiveFlg = 0; // 0:InActive 1:Active
-    /////////////////////////////////////
-    // 更新関数
-    this.update = function() {
-
-        if (mActiveFlg) {
-            gImagePs.draw(mPoint.x, mPoint.y, 0, 0, 10, 40); //弾位置         
-            mPoint.x -= mMoveY;
-            mPoint.y -= mMoveX;
-            gBulletX = mPoint.x;
-            gBulletY = mPoint.y;
-            // 画面外処理
-            if ((mPoint.x + 50 > 1366 || mPoint.x < 0) || (mPoint.y + 50 > 768 || mPoint.y < 0)) {
-                mActiveFlg = 0;
-            }
-        }
-    }
-
-    this.setActive = function(flg) {
-        mActiveFlg = flg;
-    }
-    this.getActive = function() {
-        return mActiveFlg;
-    }
-    this.getPos = function() {
-        return [mPoint.x, mPoint.y];
-    }
-    this.shot = function(x, y, angle, speed) {
-        mPoint.x = x;
-        mPoint.y = y;
-        mAngle = angle;
-        mSpeed = speed;
-        mRadians = mAngle * Math.PI / 180;
-        mMoveX = Math.cos(mRadians) * mSpeed;
-        mMoveY = Math.sin(mRadians) * mSpeed;
-        mActiveFlg = 1;
-    }
-
-}
-
-
-
-/////////////////////////////////////
-// 敵弾クラス
-/////////////////////////////////////
-function Ebullet() {
-    // コンストラクタ
-    var EmSpeed = 10;
-    var EmPoint = { x: 0, y: 0 };
-    var EmAngle = 0;
-    var EmRadians, EmMoveX, EmMoveY;
-    var EmActiveFlg = 0; // 0:InActive 1:Active
-    this.width = 10;
-    this.height = 10;
-    this.collidedFrame = false;
-    /////////////////////////////////////
-    // 更新関数
-
-    this.update = function() {
-        drawString(300, 50, "red", "24px 'HG創英角ゴシックUB'", "EmPoint.x" + EmPoint.x)
-        drawString(300, 100, "red", "24px 'HG創英角ゴシックUB'", "EmPoint.y" + EmPoint.y)
-        if (EmActiveFlg) {
-            drawFill(EmPoint.x, EmPoint.y, 10, 10, "red");
-            EmPoint.x -= EmMoveY;
-            EmPoint.y += EmMoveX;
-            // 画面外処理
-            if (EmPoint.y + 50 > 768 || EmPoint.y < -868) {
-                EmActiveFlg = 0;
-            }
-        }
-    }
-    this.setEActive = function(Eflg) {
-        EmActiveFlg = Eflg;
-    }
-    this.getEActive = function() {
-        return EmActiveFlg;
-    }
-    this.getEPos = function() {
-        return [EmPoint.x, EmPoint.y];
-    }
-    this.Eshot = function(x, y, Eangle, Espeed) {
-        EmPoint.x = x;
-        EmPoint.y = y;
-        EmAngle = Eangle;
-        EmSpeed = Espeed;
-        EmRadians = EmAngle * Math.PI / 180;
-        EmMoveX = Math.cos(EmRadians) * EmSpeed;
-        EmMoveY = Math.sin(EmRadians) * EmSpeed;
-        EmActiveFlg = 1;
-        // console.log("Bullet activated!");
-    }
-    this.EmPoint = EmPoint;
-}
-=======
     } else if (gScene == 3) {
         // drawFill(0, 0, 1366, 768, BG_COLOR[gStage]);
         gameOverImg.draw(0, 0, 0, 0, 1366, 786);
@@ -716,7 +483,6 @@ function Ebullet() {
     }
     this.EmPoint = EmPoint;
 }
->>>>>>> parent of c7bc000 (Merge branch 'main' into Ainur)
 
 function restartGame() {
     gFirstFlg = 1;
