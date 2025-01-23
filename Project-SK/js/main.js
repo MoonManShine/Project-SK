@@ -24,12 +24,9 @@ var gImageNormal;
 var gImageHard;
 var gScene = 0;
 var time;
-var timebullet;
-var timeCounter;
 var Pspeed;
 var i;
 var Pdirection;
-var Counter;
 var debug;
 
 var gImageObj;
@@ -131,8 +128,6 @@ function update() {
         gDispCnt = 0;
         gFirstFlg = 0;      //初期化用
         time = 0;   // ストーリー画面遷移
-        timebullet = 0;
-        timeCounter = 0;
         gPosX = 633;    //自機座標
         Pdirection = 100;   //自機向き制御
     }
@@ -239,7 +234,7 @@ function update() {
         drawString(300, 150, "red", "24px 'HG創英角ゴシックUB'", "debug" + debug);
         ////////////////////////////////////////////
         ///////////////////////////////////////////弾
-        timebullet++; //弾発射間隔の制御
+        time++; //弾発射間隔の制御
         //キー入力処理
         if (isC()) {
             Pdirection = 100;
@@ -266,7 +261,6 @@ function update() {
 
         /////////////////////////////////////////////////
         /////////////////////////////////////////////////自機移動
-        timeCounter++;
         if (isLeft() && gPosX >= 343) {         //hidari
             gPosX -= gPspeed;
             Pdirection = 0;
@@ -274,24 +268,10 @@ function update() {
             gPosX += gPspeed;
             Pdirection = 200;
         }
-        
-        if (Counter < 1) {
-            gImage.draw(gPosX, 658, Pdirection, 0, 100, 100); //自機hyouji
-        }
-        if (isB()   &&  timeCounter>=120) {
-            timeCounter = 0;
-            Counter = 11;
-        }
-        if (Counter >= 1) {
-            time++;
-            if (time >= 5) {
-                Counter--;
-            }
-            gImageCounter.draw(gPosX, 658, (120 * Counter), 0, 120, 120);
-        }
 
 
 
+        gImage.draw(gPosX, 658, Pdirection, 0, 100, 100); //自機hyouji
         ///////////////////////////////////////////
         ///////////////////////////////////////////敵テンタ表示
         for (idx = 0; idx < OBJ_NUM; idx++) {
@@ -357,21 +337,7 @@ function update() {
                         OBJO_Y_DATA[gStage][idx] = -9999; //爆発したら消える
                         SODN++; //撃墜数+１
                     }
-                }
-             if (Counter < 1) {
-                gImage.draw(gPosX, 658, Pdirection, 0, 100, 100); //自機hyouji
-             }
-             if (isB()   &&  timeCounter>=120) {
-                 timeCounter = 0;
-                 Counter = 11;
-             }
-                if (Counter >= 1) {
-                time++;
-                if (time >= 5) {
-                    Counter--;
-                }
-                    gImageCounter.draw(gPosX, 658, (120 * Counter), 0, 120, 120);
-                }
+            }
                 } else {
                     gImageEO.draw(OBJ_X_DATA , (OBJO_Y_DATA[gStage][idx] - gMapPosY), OBJ_SRCX_DATA[gStage][idx], 0, 80, 80); //それ以外は敵を表示
                 }
