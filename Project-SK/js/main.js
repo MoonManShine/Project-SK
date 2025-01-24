@@ -449,7 +449,7 @@ function update() {
             
             if (playerHP <= 0) {
                 console.log("Game Over! Final HP:", playerHP);
-                gScene = 3; /* сцена окончания*/
+                gScene = 4; /* сцена окончания*/
                 break; 
             }
         }
@@ -461,7 +461,7 @@ function update() {
     
     drawHP(); 
 
-    } else if (gScene == 3) {
+    } else if (gScene == 4) {
         // drawFill(0, 0, 1366, 768, BG_COLOR[gStage]);
         gameOverImg.draw(0, 0, 0, 0, 1366, 786);
         if (isC()) {
@@ -477,7 +477,7 @@ function drawHP() {
             // Отрисовка заполненного сердца
             hpHeartImg.draw(heartX, hpStartY, 0, 0, hpHeartImgWidth, hpHeartImgHeight);
         } else {
-            // Если нужно отображать "пустые" сердца, можно добавить другое изображение
+            // Если нужно отображать "пустые" сердца
             hpEmpty.draw(heartX, hpStartY, 0, 0, hpHeartImgWidth, hpHeartImgHeight);
         }
     }
@@ -624,4 +624,5 @@ function checkCollision(obj1, obj2) {       /*obj1 - player, obj2 - enemy/bullet
     gPosX = 633;
     Pdirection = 0;
     playerPos.x = gPosX;
+    gScene = 0;
 }
