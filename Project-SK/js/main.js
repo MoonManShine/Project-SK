@@ -17,7 +17,12 @@ var gImageGt;
 var gImagePs;
 var gImageET;
 var gImageBb;
-var gScene;
+var gImageAb;
+var gImageAsh;
+var gImageAsp;
+var gImageNormal;
+var gImageHard;
+var gScene = 0;
 var time;
 var Pspeed;
 var i;
@@ -56,12 +61,29 @@ var OBJ_NUM = 7;
 var OBJ_X_DATA = 600;
 
 var OBJ_Y_DATA = [
-    [-800, -900, -1200, -1800, -2100, -2200, -2300],
+    [-100, -900, -1200, -1800, -2100, -2200, -2300],
     [-800, -1200, -1900, -8000, -2100, -2200, -2300],
     [-800, -900, -1200, -1800, -2100, -2200, -2300],
     [-800, -900, -1200, -1800, -2100, -2200, -2300]
 ];
-
+var OBJO_Y_DATA = [
+    [-200, -800, -1000, -1800, -2100, -2200, -2300],
+    [-800, -1200, -1900, -8000, -2100, -2200, -2300],
+    [-800, -900, -1200, -1800, -2100, -2200, -2300],
+    [-800, -900, -1200, -1800, -2100, -2200, -2300]
+];
+var AspOBJ_Y_DATA = [
+    [-100, -1900, -2700],
+    [-800, -1700, -2900],
+    [-900, -1900, -2200],
+    [-800, -1900, -2600]
+]; //アイテムスピード出現
+var AbOBJ_Y_DATA = [
+    [-200, -1600, -2500],
+    [-600, -1900, -2500],
+    [-700, -1700, -2500],
+    [-400, -1600, -2500]
+]; //アイテム弾丸補充出現
 
 var OBJ_SRCX_DATA = [
     [0, 0, 0, 0, 0, 0, 0],
@@ -91,6 +113,7 @@ function update() {
         gImage = new image("./images/PlayerG.png"); //自機
         gImagePs = new image("./images/Pshot.png"); //弾自機
         gImageET = new image("./images/Tentacle.png"); //テンタ
+        gImageEO = new image("./images/Octopus.png"); //オクト
         gImageBb = new image("./images/Bombeffect.png");
         hpHeartImg = new image("./images/hpHeart.png");
         hpEmpty = new image("./images/hpEmpty.png");
@@ -102,6 +125,7 @@ function update() {
         gImageHard = new image("./images/Hard.png");
         gPspeed = 10;    //自機速度
         SODN = 0; //撃墜数
+        Bullet_limit = 100;
         gBackX = 0;
         gBackY0 = 0;
         gBackY1 = 768;
@@ -109,6 +133,7 @@ function update() {
         gcanceloutY = 0;
         Pdirection = 100;
         gStage = 0;
+        debug = 0; //デバッグ用
         //自機用
         for (i = 0; i < BULLET_NUM; i++) {
             gBulletObj[i] = new bullet();
