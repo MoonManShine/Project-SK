@@ -90,10 +90,7 @@ var AbOBJ_Y_DATA = [
     [-700, -1700, -2500],
     [-400, -1600, -2500]
 ]; //アイテム弾丸補充出現
-<<<<<<< HEAD
-=======
 
->>>>>>> main
 
 var OBJ_SRCX_DATA = [
     [0, 0, 0, 0, 0, 0, 0],
@@ -138,10 +135,7 @@ function update() {
         gPspeed = 10;    //自機速度
         SODN = 0; //撃墜数
         Bullet_limit = 100;
-<<<<<<< HEAD
-=======
         Counter = 0;
->>>>>>> main
         gBackX = 0;
         gBackY0 = 0;
         gBackY1 = 768;
@@ -149,11 +143,8 @@ function update() {
         gcanceloutY = 0;
         Pdirection = 100;
         gStage = 0;
-<<<<<<< HEAD
         debug = 0; //デバッグ用
-=======
         debug = Counter; //デバッグ用
->>>>>>> main
         //自機用
         for (i = 0; i < BULLET_NUM; i++) {
             gBulletObj[i] = new bullet();
