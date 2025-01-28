@@ -143,8 +143,11 @@ function update() {
         gcanceloutY = 0;
         Pdirection = 100;
         gStage = 0;
+<<<<<<< HEAD
         debug = 0; //デバッグ用
         debug = Counter; //デバッグ用
+=======
+>>>>>>> main
         //自機用
         for (i = 0; i < BULLET_NUM; i++) {
             gBulletObj[i] = new bullet();
@@ -272,7 +275,7 @@ function update() {
         drawString(0, 150, "red", "24px 'HG創英角ゴシックUB'", "Bullet_limit" + Bullet_limit)
         drawString(0, 200, "red", "24px  'HG創英角ｺﾞｼｯｸUB'", "STAGE:" + gStage + "MAP POS:" + gMapPosY + "_" + (gMapPosY - 768));
         drawString(0, 250, "red", "24px  'HG創英角ｺﾞｼｯｸUB'", "gPspeed" + gPspeed);
-        drawString(0, 300, "red", "24px  'HG創英角ｺﾞｼｯｸUB'", "gBackY1" + gBackY1);
+        drawString(0, 300, "red", "24px  'HG創英角ｺﾞｼｯｸUB'", "debug" + debug);
         drawString(300, 150, "red", "24px 'HG創英角ゴシックUB'", "timeCounter" + timeCounter);
         ////////////////////////////////////////////
         ///////////////////////////////////////////弾
@@ -317,7 +320,7 @@ function update() {
         if (Counter < 1) {
             gImage.draw(gPosX, 658, Pdirection, 0, 100, 100); //自機hyouji
         }
-        if (isB() && timeCounter >= 120) {
+        if (isB() && timeCounter >= 12) {
             timeCounter = 0;
             Counter = 11;
         }
@@ -390,27 +393,30 @@ function update() {
         ////////////////////////
         ////////////////////////オクト
         for (idx = 0; idx < OBJ_NUM; idx++) {
-            if (OBJO_Y_DATA[gStage][idx] > gMapPosY && OBJO_Y_DATA[gStage][idx] < (gMapPosY - 768)) {
-                if ((gBulletX - OBJ_X_DATA ) <= 80 && (gBulletX -OBJ_X_DATA) >= 0 && (gBulletY - (OBJO_Y_DATA[gStage][idx] - gMapPosY)) <= 80 && (gBulletY - (OBJO_Y_DATA[gStage][idx] - gMapPosY)) >= 0) {
+            if (OBJO_Y_DATA[gStage][idx] > gMapPosY && OBJO_Y_DATA[gStage][idx] < (gMapPosY + 768)) {
+                if ((gBulletX - OBJ_X_DATA ) <= 80 && (gBulletX - OBJ_X_DATA ) >= 0 && (gBulletY - (OBJO_Y_DATA[gStage][idx] - gMapPosY)) <= 80 && (gBulletY - (OBJO_Y_DATA[gStage][idx] - gMapPosY)) >= 0) {
                     gImageBb.draw(OBJ_X_DATA, (OBJO_Y_DATA[gStage][idx] - gMapPosY), OBJ_SRCX_DATA[gStage][idx], 0, 80, 80);  //敵と弾が重なると爆発表示
                     if ((gBulletY - (OBJO_Y_DATA[gStage][idx] - gMapPosY)) <= 10) {
                         OBJO_Y_DATA[gStage][idx] = -9999; //爆発したら消える
                         SODN++; //撃墜数+１
                     }
                 }
-                //if (Counter >= 1) {
-                //    gImageEO.draw(OBJ_X_DATA, (OBJO_Y_DATA[gStage][idx] - gMapPosY), OBJ_SRCX_DATA[gStage][idx], 0, 80, 80);
-                //    if ((gPosX - OBJ_X_DATA) <= 120 && (gPosX - OBJ_X_DATA) >= 0 && (658 - (OBJO_Y_DATA[gStage][idx] - gMapPosY - 768)) <= 120 && (658 - (OBJO_Y_DATA[gStage][idx] - gMapPosY)) >= 0) {
-                //        gImageBb.draw(OBJ_X_DATA, (OBJO_Y_DATA[gStage][idx] - gMapPosY), OBJ_SRCX_DATA[gStage][idx], 0, 80, 80);  //敵とカウンターが重なると爆発表示
-                //        if ((658 - (OBJO_Y_DATA[gStage][idx] - gMapPosY)) <= 120) {
-                //            OBJO_Y_DATA[gStage][idx] = -9999; //爆発したら消える
-                //            SODN++; //撃墜数+１
-                //        }
-                //    }
-             } else {
+            }
+            //if ((gPosX - OBJ_X_DATA) <= 120 && (gPosX - OBJ_X_DATA) >= 0 && (658 - (OBJO_Y_DATA[gStage][idx] - gMapPosY - 768)) <= 120 && (658 - (OBJO_Y_DATA[gStage][idx] - gMapPosY)) >= 0) {
+                if (Counter >= 1) {
+                    gImageBb.draw(OBJ_X_DATA, (OBJO_Y_DATA[gStage][idx] - gMapPosY), OBJ_SRCX_DATA[gStage][idx], 0, 80, 80);  //敵とカウンターが重なると爆発表示
+                    if ((gPosX - OBJ_X_DATA) <= 120 &&   (658 - (OBJO_Y_DATA[gStage][idx] - gMapPosY)) <= 120) {
+                        OBJO_Y_DATA[gStage][idx] = -9999; //爆発したら消える
+                        gImageBb.draw(OBJ_X_DATA, (OBJO_Y_DATA[gStage][idx] - gMapPosY), OBJ_SRCX_DATA[gStage][idx], 0, 80, 80); 
+                        SODN++; //撃墜数+１
+                    }
+                }
+            //} 
+            if (OBJO_Y_DATA[gStage][idx] > gMapPosY) {
                     gImageEO.draw(OBJ_X_DATA, (OBJO_Y_DATA[gStage][idx] - gMapPosY), OBJ_SRCX_DATA[gStage][idx], 0, 80, 80); //それ以外は敵を表示
                 }
-         }
+         
+        }
             ///アイテム
             for (idx = 0; idx < OBJ_NUM; idx++) {
                 if ((OBJ_X_DATA - gPosX) <= 100 && ((OBJ_X_DATA + 50) - gPosX) <= 100 && (658 - (AspOBJ_Y_DATA[gStage][idx] - gMapPosY)) >= 0 && (658 - (AspOBJ_Y_DATA[gStage][idx] - gMapPosY)) <= 100) {
