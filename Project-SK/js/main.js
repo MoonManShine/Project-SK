@@ -61,6 +61,7 @@ var playerPos = {
     width: 100,
     height: 100
 }
+var enemyHitFlags = []; //массив для обратки разового столкновения с врагом
 var OBJ_NUM = 7;
 var difficulty = 0;
 var OBJ_NUM = 7;
@@ -412,13 +413,18 @@ function update() {
             if (OBJO_Y_DATA[gStage][idx] > gMapPosY) {
                     gImageEO.draw(OBJ_X_DATA, (OBJO_Y_DATA[gStage][idx] - gMapPosY), OBJ_SRCX_DATA[gStage][idx], 0, 80, 80); //それ以外は敵を表示
                     if (checkCollision(playerPos, {x: OBJ_X_DATA, y: (OBJO_Y_DATA[gStage][idx] - gMapPosY), width: 100, height: 100})) {
-                        playerHP--;    // Обработка столкновения (уменьшение HP игрока и т.д.)
+                        if (!enemyHitFlags[idx]) { //проверяем получал ли игрок урон от этого врага
+                            playerHP--;    // Обработка столкновения (уменьшение HP игрока и т.д.)
+                            enemyHitFlags[idx] = true; //отмечаем что этот враг нанес урон
+                        }
                         if (playerHP <= 0) {
                             console.log("Game Over! Final HP:", playerHP);
                             gScene = 4; /* сцена окончания*/
                             break; 
                         }
                     }
+                } else {
+                    enemyHitFlags[idx] = false; // если коллизии нет то сбрасываем флаг
                 }
          
         }
