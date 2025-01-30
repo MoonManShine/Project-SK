@@ -159,7 +159,8 @@ function update() {
         gPosX = 633;    //自機座標
         Pdirection = 100;   //自機向き制御
         gSoundManager   =   new SoundManager();
-        gSoundManager.play('BGMtitle');
+        gSoundManager.playAudio('BGMtitle');
+
     }
 
 
@@ -197,7 +198,7 @@ function update() {
         drawString(300, 100, "red", "24px 'HG創英角ゴシックUB'", "gScens" + gScene)
     } else if (gScene == 2) {
         ////////難易度選択/////////////////////////
-        gSoundManager.stop('BGMstory');/////////とりあえず
+        // gSoundManager.stop('BGMstory');/////////とりあえず
         if (isUp()) {
             difficulty = 0;
             gSoundManager.play('push_se');
