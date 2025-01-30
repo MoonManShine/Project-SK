@@ -143,11 +143,8 @@ function update() {
         gcanceloutY = 0;
         Pdirection = 100;
         gStage = 0;
-<<<<<<< HEAD
-        debug = 0; //デバッグ用
-        debug = Counter; //デバッグ用
-=======
->>>>>>> main
+        // debug = 0; //デバッグ用
+        // debug = Counter; //デバッグ用
         //自機用
         for (i = 0; i < BULLET_NUM; i++) {
             gBulletObj[i] = new bullet();
@@ -414,6 +411,14 @@ function update() {
             //} 
             if (OBJO_Y_DATA[gStage][idx] > gMapPosY) {
                     gImageEO.draw(OBJ_X_DATA, (OBJO_Y_DATA[gStage][idx] - gMapPosY), OBJ_SRCX_DATA[gStage][idx], 0, 80, 80); //それ以外は敵を表示
+                    if (checkCollision(playerPos, {x: OBJ_X_DATA, y: (OBJO_Y_DATA[gStage][idx] - gMapPosY), width: 100, height: 100})) {
+                        playerHP--;    // Обработка столкновения (уменьшение HP игрока и т.д.)
+                        if (playerHP <= 0) {
+                            console.log("Game Over! Final HP:", playerHP);
+                            gScene = 4; /* сцена окончания*/
+                            break; 
+                        }
+                    }
                 }
          
         }
@@ -460,10 +465,12 @@ function update() {
             }
         }
     }
+
     // Сбрасываем флаги ПОСЛЕ обработки всех столкновений в кадре
-    for (let i = 0; i < EBULLET_NUM; i++){
-        gEBulletObj[i].hasCollidedThisFrame=false;
+    for (let i = 0; i < EBULLET_NUM; i++) {
+        gEBulletObj[i].hasCollidedThisFrame = false;
     }
+
     
     drawHP(); 
 
@@ -624,11 +631,12 @@ function checkCollision(obj1, obj2) {       /*obj1 - player, obj2 - enemy/bullet
         }
         this.EmPoint = EmPoint;
     }
- function restartGame() {
-    gFirstFlg = 1;
-    playerHP = 3;
-    gPosX = 633;
-    Pdirection = 0;
-    playerPos.x = gPosX;
-    gScene = 0;
-}
+
+    function restartGame() {
+        gFirstFlg = 1;
+        playerHP = 3;
+        gPosX = 633;
+        Pdirection = 0;
+        playerPos.x = gPosX;
+        gScene = 0;
+    }
