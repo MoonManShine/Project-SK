@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../Group Work/Code"
+		}
+	],
+	"settings": {
+		"liveServer.settings.multiRootWorkspaceName": "1101-001-"
+	}
+}

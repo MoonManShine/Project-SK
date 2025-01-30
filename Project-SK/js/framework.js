@@ -61,8 +61,8 @@ onload = function() {
     }
     ctx = canvas.getContext('2d');
     //    zoom = (Math.floor((screen.width / 1366) * 100) / 100);
-    //    zoomW = (Math.floor((document.documentElement.clientWidth / 1366) * 100) / 100);
-    //    zoomH = (Math.floor((document.documentElement.clientHeight / 768) * 100) / 100);
+//    zoomW = (Math.floor((document.documentElement.clientWidth / 1366) * 100) / 100);
+//    zoomH = (Math.floor((document.documentElement.clientHeight / 768) * 100) / 100);
 
     zoomW = 1.0;
     zoomH = 1.0;
@@ -79,7 +79,7 @@ onload = function() {
     document.getElementById('audioBGM').addEventListener('ended', function() { this.currentTime = 0; this.pause(); document.getElementById('audio_jet').play(); }, false);
     pauseAudio('audioBGM')
     // キーボードイベント関数の設定
-    // (2017/10/19 ver0.15 追加 START)
+// (2017/10/19 ver0.15 追加 START)
     var suport;
     support = {
         mspointer: window.navigator.msPointerEnabled,
@@ -107,19 +107,19 @@ onload = function() {
     support.mspointer ? 'MSPointerMove' :
     support.touch ? 'touchmove' :
     'mousemove';
-    // (2017/10/19 ver0.15 追加 END)
+// (2017/10/19 ver0.15 追加 END)
 
     window.addEventListener('keydown', keydownfunc, true);
     window.addEventListener('keyup', keyupfunc, true);
     window.addEventListener('devicemotion', devfunc, true);
     canvas.addEventListener('click', mousefunc, true);
     canvas.addEventListener('dblclick', mouseDblfunc, true);
-    canvas.addEventListener(touchStartEvent, mouseDownfunc, false); // (2017/10/19 ver0.15 追加)
-    canvas.addEventListener(touchEndEvent, mouseUpfunc, false); 	// (2017/10/19 ver0.15 追加)
-    canvas.addEventListener(touchMoveEvent, mouseMovefunc, false); // (2017/10/19 ver0.15 追加)
+    canvas.addEventListener(touchStartEvent, mouseDownfunc, false);	// (2017/10/19 ver0.15 追加)
+    canvas.addEventListener(touchEndEvent, mouseUpfunc, false);		// (2017/10/19 ver0.15 追加)
+    canvas.addEventListener(touchMoveEvent, mouseMovefunc, false);	// (2017/10/19 ver0.15 追加)
     // タイマーイベント関数の設定
     timerID = setInterval('mainLoop()', 16);
-    //    timerID = setInterval('mainLoop()', 32);
+//    timerID = setInterval('mainLoop()', 32);
 }
 
 ///////////////////////////////
@@ -304,7 +304,7 @@ function getClickPos() {
     return [Math.floor(clickPosX), Math.floor(clickPosY)];
 }
 
-function getClickButton() {
+function getClickButton(){
     return clickBtn;
 }
 
@@ -329,7 +329,7 @@ function mouseDownfunc(event) {
         mouseOnPosX = event.clientX;
         mouseOnPosY = event.clientY;
         mouseButton = 1;
-
+        
     }
 }
 
@@ -337,7 +337,7 @@ function mouseDownfunc(event) {
 // マウス移動イベント関数
 function mouseMovefunc(event) {
 
-    event.preventDefault();
+    event.preventDefault();    
     mouseCurX = event.clientX;
     mouseCurY = event.clientY;
 
@@ -559,7 +559,7 @@ function devfunc(event) {
 // ビデオクラス 
 // (2017/04/15 ver0.13 機能追加)
 /////////////////////////////////////
-function video(vname, frmInitPos) {
+function video( vname, frmInitPos ) {
     // コンストラクタ
     var mVideo;                                         // Videoオブジェクト
     var mtFrmStartPos;                                  // フレーム開始位置
@@ -567,25 +567,25 @@ function video(vname, frmInitPos) {
     var mDuration;
 
     mVideo = document.getElementById(vname);            // 読込
-    while (mVideo.readyState == 0); 		            // 読込待ちループ
-    //console.log("B:"+mVideo.readyState);
-    mVideo.currentTime = frmInitPos; 		        // 開始位置SEEK
-    //console.log("C:"+mVideo.readyState);
+    while(mVideo.readyState == 0);			            // 読込待ちループ
+//console.log("B:"+mVideo.readyState);
+    mVideo.currentTime  = frmInitPos;			        // 開始位置SEEK
+//console.log("C:"+mVideo.readyState);
     mtFrmStartPos = mVideo.seekable.start(0);    	    // フレーム開始位置
     mtFrmEndPos = mVideo.seekable.end(0);    	    	// フレーム終了位置
-    //mDuration = mVideo.duration;
+//mDuration = mVideo.duration;
 
     /////////////////////////////////////
     // フレーム描画関数
     this.frmDraw = function(dx, dy, frmPos, width, height) {
-        mVideo.currentTime = frmPos;
-        ctx.drawImage(mVideo, dx, dy, width, height);
+        mVideo.currentTime  = frmPos;
+        ctx.drawImage( mVideo, dx, dy, width, height);
     }
 
     /////////////////////////////////////
     // フレーム位置設定関数
-    this.frmSetPos = function(frmPos) {
-        mVideo.currentTime = frmPos;
+    this.frmSetPos = function( frmPos ) {
+        mVideo.currentTime  = frmPos;
     }
 
     /////////////////////////////////////

@@ -444,18 +444,18 @@ function update() {
         }
             ///アイテム
             for (idx = 0; idx < OBJ_NUM; idx++) {
-                if (checkCollision(playerPos, { x: OBJ_X_DATA[gStage][idx], y: AspOBJ_Y_DATA[gStage][idx] - gMapPosY, width: 100, height: 100 }))  {
+                if (checkCollision(playerPos, { x: OBJ_X_DATA[gStage][idx], y: AspOBJ_Y_DATA[gStage][idx] - gMapPosY, width: 50, height: 50 }))  {
                     gSoundManager.play('item_se');
                     gPspeed += 5;
                     AspOBJ_Y_DATA[gStage][idx] = -9999;
                 } else if (AspOBJ_Y_DATA[gStage][idx] > gMapPosY) {
-                    gImageAsp.draw(OBJ_X_DATA[gStage][idx], (AspOBJ_Y_DATA[gStage][idx] - gMapPosY), OBJ_SRCX_DATA[gStage][idx], 0, 80, 80); //アイテム・スピードを表示
+                    gImageAsp.draw(OBJ_X_DATA[gStage][idx], (AspOBJ_Y_DATA[gStage][idx] - gMapPosY), OBJ_SRCX_DATA[gStage][idx], 0, 50, 50); //アイテム・スピードを表示
                 }
             } //スピード終了
 
             ///弾丸数
             for (idx = 0; idx < OBJ_NUM; idx++) {
-                if(checkCollision(playerPos, { x: OBJ_X_DATA[gStage][idx], y: AbOBJ_Y_DATA[gStage][idx] - gMapPosY, width: 100, height: 100 }))  {
+                if(checkCollision(playerPos, { x: OBJ_X_DATA[gStage][idx], y: AbOBJ_Y_DATA[gStage][idx] - gMapPosY, width: 80, height: 80 }))  {
                     gSoundManager.play('item_se');
                     Bullet_limit += 5;
                     AbOBJ_Y_DATA[gStage][idx] = -9999;
