@@ -62,6 +62,8 @@ var playerPos = {
     height: 100
 }
 var enemyHitFlags = []; //массив для обратки разового столкновения с врагом
+var enemyShootInterval = 60; // Враги стреляют каждые 60 кадров
+var enemyShootTimer = 0;
 var OBJ_NUM = 7;
 var difficulty = 0;
 var OBJ_NUM = 7;
@@ -166,6 +168,7 @@ function update() {
         Pdirection = 100;   //自機向き制御
         gSoundManager   =   new SoundManager();
         gSoundManager.play('BGMtitle');
+        enemyShootTimer++;
     }
 
 
@@ -382,8 +385,8 @@ function update() {
                         gSoundManager.play('shot');
                         for (k = 0; k < EBULLET_NUM; k++) {
                             if (gEBulletObj[k].getEActive() == 0) {
-                                var clickPos = getClickPos();
-                                gEBulletObj[k].Eshot((OBJ_X_DATA+40), 180, 0, 10); //10gasokudo
+                                // var clickPos = getClickPos();
+                                gEBulletObj[k].Eshot((OBJ_X_DATA[gStage][idx] + 40), OBJ_Y_DATA[gStage][idx] - gMapPosY, 0, 10); //10gasokudo
                                 break;
                             }
                         }
@@ -421,7 +424,8 @@ function update() {
             //} 
             if (OBJO_Y_DATA[gStage][idx] > gMapPosY) {
                     gImageEO.draw(OBJ_X_DATA[gStage][idx], (OBJO_Y_DATA[gStage][idx] - gMapPosY), OBJ_SRCX_DATA[gStage][idx], 0, 80, 80); //それ以外は敵を表示
-                    if (checkCollision(playerPos, {x: OBJ_X_DATA, y: (OBJO_Y_DATA[gStage][idx] - gMapPosY), width: 100, height: 100})) {
+                    if (checkCollision(playerPos, {x: OBJ_X_DATA[gStage][idx], y: (OBJO_Y_DATA[gStage][idx] - gMapPosY), width: 100, height: 100})) {
+                        console.log("Collision");
                         if (!enemyHitFlags[idx]) { //проверяем получал ли игрок урон от этого врага
                             playerHP--;    // Обработка столкновения (уменьшение HP игрока и т.д.)
                             enemyHitFlags[idx] = true; //отмечаем что этот враг нанес урон
@@ -440,7 +444,7 @@ function update() {
         }
             ///アイテム
             for (idx = 0; idx < OBJ_NUM; idx++) {
-                if ((OBJ_X_DATA[gStage][idx] - gPosX) <= 100 && ((OBJ_X_DATA[gStage][idx] + 50) - gPosX) <= 100 && (658 - (AspOBJ_Y_DATA[gStage][idx] - gMapPosY)) >= 0 && (658 - (AspOBJ_Y_DATA[gStage][idx] - gMapPosY)) <= 100) {
+                if (checkCollision(playerPos, { x: OBJ_X_DATA[gStage][idx], y: AspOBJ_Y_DATA[gStage][idx] - gMapPosY, width: 100, height: 100 }))  {
                     gSoundManager.play('item_se');
                     gPspeed += 5;
                     AspOBJ_Y_DATA[gStage][idx] = -9999;
@@ -451,7 +455,7 @@ function update() {
 
             ///弾丸数
             for (idx = 0; idx < OBJ_NUM; idx++) {
-                if ((OBJ_X_DATA[gStage][idx] - gPosX) <= 100 && ((OBJ_X_DATA[gStage][idx] + 50) - gPosX) <= 100 && (658 - (AbOBJ_Y_DATA[gStage][idx] - gMapPosY)) >= 0 && (658 - (AbOBJ_Y_DATA[gStage][idx] - gMapPosY)) <= 100) {
+                if(checkCollision(playerPos, { x: OBJ_X_DATA[gStage][idx], y: AbOBJ_Y_DATA[gStage][idx] - gMapPosY, width: 100, height: 100 }))  {
                     gSoundManager.play('item_se');
                     Bullet_limit += 5;
                     AbOBJ_Y_DATA[gStage][idx] = -9999;
@@ -481,7 +485,7 @@ function update() {
             
             if (playerHP <= 0) {
                 console.log("Game Over! Final HP:", playerHP);
-                gScene = 3; /* сцена окончания*/
+                gScene = 4; /* сцена окончания*/
                 break; 
             }
         }
@@ -492,8 +496,35 @@ function update() {
     }
     
     drawHP(); 
+    if (enemyShootTimer >= enemyShootInterval) {
+        for (k = 0; k < EBULLET_NUM; k++) {
+            if (gEBulletObj[k].getEActive() == 0) {
+                var enemyIdx = Math.floor(Math.random() * OBJ_NUM); // Выбираем случайного врага
+                gEBulletObj[k].Eshot(
+                    OBJ_X_DATA[gStage][enemyIdx] + 40,
+                    OBJ_Y_DATA[gStage][enemyIdx] - gMapPosY,
+                    90, // Вниз
+                    10
+                );
+                break;
+            }
+        }
+        enemyShootTimer = 0; // Сброс таймера
+    }
 
-    } else if (gScene == 3) {
+    for (idx = 0; idx < OBJ_NUM; idx++) {
+        if (checkCollision(playerPos, { x: OBJ_X_DATA[gStage][idx], y: AspOBJ_Y_DATA[gStage][idx] - gMapPosY, width: 100, height: 100 })) {
+            gSoundManager.play('item_se');
+            gPspeed += 5;
+            AspOBJ_Y_DATA[gStage][idx] = -9999;
+        } else if (AspOBJ_Y_DATA[gStage][idx] > gMapPosY) {
+            gImageAsp.draw(OBJ_X_DATA[gStage][idx], AspOBJ_Y_DATA[gStage][idx] - gMapPosY, OBJ_SRCX_DATA[gStage][idx], 0, 80, 80);
+        }
+
+
+    }
+
+    } else if (gScene == 4) {
         // drawFill(0, 0, 1366, 768, BG_COLOR[gStage]);
         gameOverImg.draw(0, 0, 0, 0, 1366, 786);
         if (isC()) {
@@ -524,25 +555,9 @@ function checkCollision(obj1, obj2) {       /*obj1 - player, obj2 - enemy/bullet
         obj1.y + obj1.height > obj2.y     /*Нижняя сторона obj1 ниже верхней стороны obj2*/
     );
 }
-    
-
-
-
-             
-
-
-
-
-
-
-        
-    
-
 
     //byouga    gazo   kyanpasu    gazousaizu
     //gImage.draw(0, 0, 0, 0, 1366, 768);
-
-
 
     /////////////////////////////////////
     // 弾クラス
@@ -654,4 +669,5 @@ function checkCollision(obj1, obj2) {       /*obj1 - player, obj2 - enemy/bullet
     gPosX = 633;
     Pdirection = 0;
     playerPos.x = gPosX;
+    gScene = 0;
 }
