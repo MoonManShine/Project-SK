@@ -158,6 +158,8 @@ function update() {
         timeCounter = 0;
         gPosX = 633;    //自機座標
         Pdirection = 100;   //自機向き制御
+        gSoundManager   =   new SoundManager();
+        gSoundManager.play('BGMtitle');
     }
 
 
@@ -165,11 +167,15 @@ function update() {
 
 
     if (gScene == 0) {
-        ////////////////////タイトル部分
-        gImageT.draw(0, 0, 0, 0, 1366, 768);
+        ////////////////////タイトル部分       
+        gImageT.draw(0, 0, 0, 0, 1366, 768);        
         if (isC()) {
             gScene = 2;
             time = 0;
+            BGMflg  =   1;
+            gSoundManager.play('push_se');
+            gSoundManager.stop('BGMtitle');
+            gSoundManager.play('BGMstory');
         }
         drawString(300, 100, "red", "24px 'HG創英角ゴシックUB'", "gScens" + gScene)
 
@@ -184,15 +190,20 @@ function update() {
         } else if (time >= 240) {
             gScene = 2;
             time = 0;
+            BGMflg  =   1;
+            gSoundManager.stop('BGMstory');
         }
         drawString(300, 50, "red", "24px 'HG創英角ゴシックUB'", "Time" + time)
         drawString(300, 100, "red", "24px 'HG創英角ゴシックUB'", "gScens" + gScene)
     } else if (gScene == 2) {
         ////////難易度選択/////////////////////////
+        gSoundManager.stop('BGMstory');/////////とりあえず
         if (isUp()) {
             difficulty = 0;
+            gSoundManager.play('push_se');
         } else if (isDown()) {
             difficulty = 1;
+            gSoundManager.play('push_se');
         }
 
         if (difficulty == 0) {
@@ -204,16 +215,18 @@ function update() {
 
         if (isC()) {
             gScene = 3;
+            gSoundManager.play('push_se');
+            gSoundManager.play('BGMbattle');
         }
 
     } else if (gScene == 3) {
         ///////////////////////////////////////////////////////////////////ゲーム部分///////////////////////////////////
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
         //ゲーム画面白
         drawFill(0, 0, 1366, 768, BG_COLOR[gStage]);
         gImageGt.draw(343, 0, 0, 0, 680, 768);
+        
 
         ///////////////////////////////////////////////////背景
         ///////////////////////////////////////////////////////
@@ -270,7 +283,7 @@ function update() {
         drawString(0, 150, "red", "24px 'HG創英角ゴシックUB'", "Bullet_limit" + Bullet_limit)
         drawString(0, 200, "red", "24px  'HG創英角ｺﾞｼｯｸUB'", "STAGE:" + gStage + "MAP POS:" + gMapPosY + "_" + (gMapPosY - 768));
         drawString(0, 250, "red", "24px  'HG創英角ｺﾞｼｯｸUB'", "gPspeed" + gPspeed);
-        drawString(0, 300, "red", "24px  'HG創英角ｺﾞｼｯｸUB'", "debug" + debug);
+        drawString(0, 300, "red", "24px  'HG創英角ｺﾞｼｯｸUB'", "BGMflg" + BGMflg);
         drawString(300, 150, "red", "24px 'HG創英角ゴシックUB'", "timeCounter" + timeCounter);
         ////////////////////////////////////////////
         ///////////////////////////////////////////弾
@@ -280,6 +293,7 @@ function update() {
             Pdirection = 100;
             if (timebullet >= 30) {
                 timebullet = 0;
+                gSoundManager.play('shot');
                 for (i = 0; i < BULLET_NUM; i++) {
                     if (Bullet_limit >= 1) {//残弾数
                         Bullet_limit--;
@@ -345,6 +359,7 @@ function update() {
                 if ((gBulletX - (OBJ_X_DATA + dir * dis)) <= 80 && (gBulletX - (OBJ_X_DATA + dir * dis)) >= 0 && (gBulletY - (OBJ_Y_DATA[gStage][idx] - gMapPosY)) <= 80 && (gBulletY - (OBJ_Y_DATA[gStage][idx] - gMapPosY)) >= 0) {
                     gImageBb.draw((OBJ_X_DATA + dir * dis), (OBJ_Y_DATA[gStage][idx] - gMapPosY), OBJ_SRCX_DATA[gStage][idx], 0, 80, 80);  //敵と弾が重なると爆発表示
                     if ((gBulletY - (OBJ_Y_DATA[gStage][idx] - gMapPosY)) <= 10) {
+                        gSoundManager.play('bomb_se');
                         OBJ_Y_DATA[gStage][idx] = -9999; //爆発したら消える
                         SODN++; //撃墜数+１
                     }
@@ -364,6 +379,7 @@ function update() {
                 if ((gBulletX - (OBJ_X_DATA + dir * dis)) <= 80 && (gBulletX - (OBJ_X_DATA + dir * dis)) >= 0 && (gBulletY - (OBJ_Y_DATA[gStage][idx] - gMapPosY)) <= 80 && (gBulletY - (OBJ_Y_DATA[gStage][idx] - gMapPosY)) >= 0) {
                     gImageBb.draw((OBJ_X_DATA + dir * dis), (OBJ_Y_DATA[gStage][idx] - gMapPosY), OBJ_SRCX_DATA[gStage][idx], 0, 80, 80);  //敵と弾が重なると爆発表示;
                     if ((gBulletY - (OBJ_Y_DATA[gStage][idx] - gMapPosY)) <= 10) {
+                        gSoundManager.play('bomb_se');
                         OBJ_Y_DATA[gStage][idx] = -9999; //爆発したら消える
                         SODN++; //撃墜数+１
                     }
@@ -371,6 +387,7 @@ function update() {
                     OBJ_Y_DATA[gStage][idx] -= gSpeedN;
                     gImageET.draw((OBJ_X_DATA + dir * dis), (OBJ_Y_DATA[gStage][idx] - gMapPosY), OBJ_SRCX_DATA[gStage][idx], 0, 80, 80); //それ以外は敵を表示
                     if (isA()) {
+                        gSoundManager.play('shot');
                         for (k = 0; k < EBULLET_NUM; k++) {
                             if (gEBulletObj[k].getEActive() == 0) {
                                 var clickPos = getClickPos();
@@ -392,6 +409,7 @@ function update() {
                 if ((gBulletX - OBJ_X_DATA ) <= 80 && (gBulletX - OBJ_X_DATA ) >= 0 && (gBulletY - (OBJO_Y_DATA[gStage][idx] - gMapPosY)) <= 80 && (gBulletY - (OBJO_Y_DATA[gStage][idx] - gMapPosY)) >= 0) {
                     gImageBb.draw(OBJ_X_DATA, (OBJO_Y_DATA[gStage][idx] - gMapPosY), OBJ_SRCX_DATA[gStage][idx], 0, 80, 80);  //敵と弾が重なると爆発表示
                     if ((gBulletY - (OBJO_Y_DATA[gStage][idx] - gMapPosY)) <= 10) {
+                        gSoundManager.play('bomb_se');
                         OBJO_Y_DATA[gStage][idx] = -9999; //爆発したら消える
                         SODN++; //撃墜数+１
                     }
@@ -399,8 +417,10 @@ function update() {
             }
             //if ((gPosX - OBJ_X_DATA) <= 120 && (gPosX - OBJ_X_DATA) >= 0 && (658 - (OBJO_Y_DATA[gStage][idx] - gMapPosY - 768)) <= 120 && (658 - (OBJO_Y_DATA[gStage][idx] - gMapPosY)) >= 0) {
                 if (Counter >= 1) {
+                    gSoundManager.play('counter_SE');
                     gImageBb.draw(OBJ_X_DATA, (OBJO_Y_DATA[gStage][idx] - gMapPosY), OBJ_SRCX_DATA[gStage][idx], 0, 80, 80);  //敵とカウンターが重なると爆発表示
                     if ((gPosX - OBJ_X_DATA) <= 120 &&   (658 - (OBJO_Y_DATA[gStage][idx] - gMapPosY)) <= 120) {
+                        gSoundManager.play('bomb_se');
                         OBJO_Y_DATA[gStage][idx] = -9999; //爆発したら消える
                         gImageBb.draw(OBJ_X_DATA, (OBJO_Y_DATA[gStage][idx] - gMapPosY), OBJ_SRCX_DATA[gStage][idx], 0, 80, 80); 
                         SODN++; //撃墜数+１
@@ -415,6 +435,7 @@ function update() {
             ///アイテム
             for (idx = 0; idx < OBJ_NUM; idx++) {
                 if ((OBJ_X_DATA - gPosX) <= 100 && ((OBJ_X_DATA + 50) - gPosX) <= 100 && (658 - (AspOBJ_Y_DATA[gStage][idx] - gMapPosY)) >= 0 && (658 - (AspOBJ_Y_DATA[gStage][idx] - gMapPosY)) <= 100) {
+                    gSoundManager.play('item_se');
                     gPspeed += 5;
                     AspOBJ_Y_DATA[gStage][idx] = -9999;
                 } else if (AspOBJ_Y_DATA[gStage][idx] > gMapPosY) {
@@ -425,12 +446,16 @@ function update() {
             ///弾丸数
             for (idx = 0; idx < OBJ_NUM; idx++) {
                 if ((OBJ_X_DATA - gPosX) <= 100 && ((OBJ_X_DATA + 50) - gPosX) <= 100 && (658 - (AbOBJ_Y_DATA[gStage][idx] - gMapPosY)) >= 0 && (658 - (AbOBJ_Y_DATA[gStage][idx] - gMapPosY)) <= 100) {
+                    gSoundManager.play('item_se');
                     Bullet_limit += 5;
                     AbOBJ_Y_DATA[gStage][idx] = -9999;
                 } else if (AbOBJ_Y_DATA[gStage][idx] > gMapPosY) {
                     gImageAb.draw(OBJ_X_DATA, (AbOBJ_Y_DATA[gStage][idx] - gMapPosY), OBJ_SRCX_DATA[gStage][idx], 0, 80, 80); //アイテム・スピードを表示
                 }
             } //弾丸終了
+    //}else if(gScene == 4){
+    //    drawimageクリア画像
+    //    if(isC()){gFirastFlg  =   0   gScene  =   2難易度選択部分
             var collisionsThisFrame = 0;
     for (let i = 0; i < EBULLET_NUM; i++) {
         const eBullet = gEBulletObj[i];
@@ -497,9 +522,7 @@ function checkCollision(obj1, obj2) {       /*obj1 - player, obj2 - enemy/bullet
 
 
 
-            // }else if(gScene == 4){
-            //drawimageクリア画像
-            //if(isC()){gFirastFlg  =   0   gScene  =   2難易度選択部分
+             
 
 
 
