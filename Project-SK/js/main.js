@@ -64,6 +64,8 @@ var playerPos = {
 var enemyHitFlags = []; //массив для обратки разового столкновения с врагом
 var enemyShootInterval = 60; // Враги стреляют каждые 60 кадров
 var enemyShootTimer = 0;
+var railgunCharge = 0; //заряд рельстрона (0-100%)
+var railgunReady = false; //готовность к использованию
 var OBJ_NUM = 7;
 var difficulty = 0;
 var OBJ_NUM = 7;
@@ -663,11 +665,30 @@ function checkCollision(obj1, obj2) {       /*obj1 - player, obj2 - enemy/bullet
         }
         this.EmPoint = EmPoint;
     }
- function restartGame() {
-    gFirstFlg = 1;
-    playerHP = 3;
-    gPosX = 633;
-    Pdirection = 0;
-    playerPos.x = gPosX;
-    gScene = 0;
+    function restartGame() {
+        gFirstFlg = 1;
+        playerHP = 3;
+        gPosX = 633;
+        Pdirection = 0;
+        playerPos.x = gPosX;
+        gScene = 0;
+
+    function increaseRailgunCharge(amount = 20) {
+        if(railgunCharge < 100) {
+            railgunCharge = Math.min(railgunCharge + amount, 100);
+            console.log(`Charge: ${railgunCharge}%`);
+        }
+
+        if (railgunCharge >= 100) {
+            railgunReady = true;
+            console.log("Railgun is ready");
+        }
+    }
+
+    function useRailgun() {
+        if (!railgunReady) {
+            console.log("Railgun not ready");
+            return;
+        }
+    }
 }
