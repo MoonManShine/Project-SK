@@ -64,8 +64,58 @@ var playerPos = {
 var enemyHitFlags = []; //массив для обратки разового столкновения с врагом
 var enemyShootInterval = 60; // Враги стреляют каждые 60 кадров
 var enemyShootTimer = 0;
-var railgunCharge = 0; //заряд рельстрона (0-100%)
-var railgunReady = false; //готовность к использованию
+class Railgun {
+    constructor(maxCharge = 100, fireRate = 100, chargeRate = 25) {
+        this.maxCharge = maxCharge; //макс заряд(100%)
+        this.charge = maxCharge; //Текущий заряд
+        this.fireRate = fireRate; //Interval screlbi
+        this.chargeRate = chargeRate; //Сколько заряда восстанавливается
+        this.isFiring = false; //flag shoot
+        this.fireInterval = null; //Таймер стрельбы
+
+    }
+
+    //Запуск стрельбы
+
+    startFiring() {
+        if (this.isFiring || this.charge <= 0) return; //ужестреляет или нет заряда
+        this.isFiring = true;
+        console.log("Railgun Active");
+
+        this.fireInterval = setInterval(() => {
+            if(this.charge > 0) {
+                console.log("Railgun is shooting");
+                this.charge -= 5; //-5%
+            } else {
+                console.log("Charge is over");
+                this.stopFiring();
+            }
+        }, this.fireRate);
+    }
+
+    //Остановка стрельбы
+
+    stopFiring() {
+        this.isFiring = false;
+        clearInterval(this.fireInterval);
+        console.log("Railgun off");
+    }
+
+    //заряд рельстрона
+
+    recharge(amount = this.chargeRate) {
+        this.charge = Math.min(this.charge + amount, this.maxCharge);
+        console.log(`Railgun charge: ${this.charge}%`);
+    }
+
+    update() {  // Добавляем метод update()
+        if (this.charge < this.maxCharge) {
+            this.recharge(); // Восстанавливаем заряд
+        }
+    }
+
+} 
+const railgun = new Railgun();
 var OBJ_NUM = 7;
 var difficulty = 0;
 var OBJ_NUM = 7;
@@ -353,6 +403,14 @@ function update() {
             }
             gImageCounter.draw(gPosX, 658, (120 * Counter), 0, 120, 120);
         }
+
+        //railgun button
+        if (isC() && !railgun.isFiring) {
+            railgun.startFiring();
+        } else if (!isA() && railgun.isFiring) {
+            railgun.stopFiring();
+        }
+        railgun.update();
 
 
 
@@ -676,23 +734,14 @@ function checkCollision(obj1, obj2) {       /*obj1 - player, obj2 - enemy/bullet
         Pdirection = 0;
         playerPos.x = gPosX;
         gScene = 0;
-
-    function increaseRailgunCharge(amount = 20) {
-        if(railgunCharge < 100) {
-            railgunCharge = Math.min(railgunCharge + amount, 100);
-            console.log(`Charge: ${railgunCharge}%`);
-        }
-
-        if (railgunCharge >= 100) {
-            railgunReady = true;
-            console.log("Railgun is ready");
-        }
     }
-
-    function useRailgun() {
-        if (!railgunReady) {
-            console.log("Railgun not ready");
-            return;
+    function gameLoop() {
+        if (isC() && !railgun.isFiring) { // Используем railgun.isFiring
+            railgun.startFiring();      // Используем railgun.startFiring()
+        } else if (!isA() && railgun.isFiring) { // Используем railgun.isFiring
+            railgun.stopFiring();       // Используем railgun.stopFiring()
         }
+        railgun.update();            // Используем railgun.update()
+        requestAnimationFrame(gameLoop);
     }
-}
+    gameLoop();
